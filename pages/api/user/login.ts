@@ -4,9 +4,10 @@ import prisma from "../../../lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Cookies from "cookies";
+import { User } from "@prisma/client";
 
 type Data = {
-  token?: string;
+  user?: User | null;
   message?: string | null;
 };
 
@@ -47,7 +48,7 @@ export default async function handler(
           expires: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7),
         });
 
-        res.status(200).json({ message: "Success" });
+        res.status(200).json({ user: user });
         return;
       }
     } catch (err) {
