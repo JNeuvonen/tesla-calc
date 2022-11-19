@@ -16,5 +16,7 @@ export const loginRequest = async ({ email, password }: loginReqTypes) => {
     headers: requestHeaders,
   });
 
-  return res;
+  const ret = await res.json();
+
+  return ret;
 };
