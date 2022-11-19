@@ -14,6 +14,7 @@ export const loginRequest = async ({ email, password }: loginReqTypes) => {
       payload: { email, password },
     }),
     headers: requestHeaders,
+    credentials: "include",
   });
 
   const ret = await res.json();
