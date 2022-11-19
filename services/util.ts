@@ -8,4 +8,5 @@ export const postRequest = (endpoint: string) => {};
 
 export const requestHeaders = {
   "Content-Type": "application/json",
+  credentials: "include",
 };
