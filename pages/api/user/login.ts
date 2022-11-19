@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { User } from "@prisma/client";
+import { authCookieSettings } from "../../../lib/authCookieSettings";
+import { CookieSerializeOptions } from "next/dist/server/web/spec-extension/cookies/types";
 
 type Data = {
   user?: User | null;
@@ -43,10 +45,11 @@ export default async function handler(
         );
         const cookies = new Cookies(req, res);
 
-        cookies.set("token", token, {
-          httpOnly: true,
-          expires: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7),
-        });
+        cookies.set(
+          "token",
+          token,
+          authCookieSettings as CookieSerializeOptions
+        );
 
         res.status(200).json({ user: user });
         return;
@@ -55,5 +58,6 @@ export default async function handler(
       console.log(err);
     }
   }
+
   res.status(400).send({ message: "Bad Credentials" });
 }
