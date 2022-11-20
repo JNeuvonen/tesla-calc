@@ -7,11 +7,14 @@ import isStrongPassword from "validator/lib/isStrongPassword";
 import { blueGradient, greyGradient } from "../chakra/gradients";
 import BlueText from "../components/StyleWrappers/BlueText";
 import TextInputLifeFeedback from "../components/TextInputLifeFeedback";
+import { useAuth } from "../context/auth";
+import { getInputFieldValById } from "../utils/functions/general";
 
 const Login = () => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const router = useRouter();
+  const auth = useAuth();
 
   const validateEmail = (input: string) => {
     const isValid = isEmail(input);
@@ -24,11 +27,24 @@ const Login = () => {
     setPasswordIsValid(isValid);
     return isValid;
   };
+  const formIsValid = () => {
+    return emailIsValid && passwordIsValid;
+  };
+
+  const login = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const email = getInputFieldValById("email");
+    const password = getInputFieldValById("password");
+
+    if (email && password) {
+      auth.login({ email, password: password });
+    }
+  };
 
   return (
     <ContentStyles>
       <Heading>Login</Heading>
-      <form>
+      <form onSubmit={login}>
         <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
           <TextInputLifeFeedback
             label={"email"}
@@ -52,8 +68,13 @@ const Login = () => {
             errorText={"Password is required"}
           ></TextInputLifeFeedback>
 
-          <Button width="250px" margin={"0 auto"}>
-            Signup
+          <Button
+            width="250px"
+            margin={"0 auto"}
+            disabled={!formIsValid()}
+            type="submit"
+          >
+            Login
           </Button>
           <Button
             variant={"primaryInverse"}
