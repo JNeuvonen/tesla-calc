@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
-import { useAuth } from "../../context/authContext";
+import { useAuth } from "../../context/auth";
 import LoadingSpinner from "../Util/LoadingSpinner";
 type Props = {
   children: React.ReactNode;
