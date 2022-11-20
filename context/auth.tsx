@@ -61,9 +61,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       setUser(res.user);
       router.push("/");
     }
-    if (res) {
-      setIsFetching(false);
-    }
+    setIsFetching(false);
   };
 
   const login = async ({
@@ -83,9 +81,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       setUser(res.user);
       router.push("/");
     }
-    if (res) {
-      setIsFetching(false);
-    }
+    setIsFetching(false);
   };
 
   const provider = {
