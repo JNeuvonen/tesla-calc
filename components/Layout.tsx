@@ -11,8 +11,9 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   const router = useRouter();
   const path = router.asPath;
   const initAuthFetchDone = useAuth().initialFetchDone;
+  const authIsFetching = useAuth().isFetching;
 
-  if (!initAuthFetchDone) {
+  if (!initAuthFetchDone || authIsFetching) {
     return (
       <>
         <Head>
