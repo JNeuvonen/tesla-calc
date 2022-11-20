@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
-import { customErrorToast, errorToast, successToast } from "../utils/toasts";
+import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
   user: User | null;
