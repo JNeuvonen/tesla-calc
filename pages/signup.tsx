@@ -23,9 +23,11 @@ const Login = () => {
   };
 
   const validatePassword = (input: string) => {
-    const isValid = isStrongPassword(input);
-    setPasswordIsValid(isValid);
-    return isValid;
+    const isValid = isStrongPassword(input, {
+      returnScore: true,
+    });
+    setPasswordIsValid(isValid > 20);
+    return isValid > 20;
   };
 
   const formIsValid = () => {

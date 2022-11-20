@@ -25,7 +25,10 @@ export default async function handler(
       const { email, password } = req.body.payload;
 
       const validEmail = isEmail(email);
-      const validPassword = isStrongPassword(password);
+      const validPassword =
+        isStrongPassword(password, {
+          returnScore: true,
+        }) > 20;
 
       if (!validEmail) {
         res.status(400).send({ message: "Invalid email" });
