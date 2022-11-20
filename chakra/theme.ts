@@ -1,5 +1,10 @@
 import { extendTheme } from "@chakra-ui/react";
-import { secondaryButton, solidButton } from "./buttons";
+import {
+  primaryInverseButton,
+  secondaryButton,
+  secondaryInverseButton,
+  solidButton,
+} from "./buttons";
 
 const theme = extendTheme({
   components: {
@@ -7,6 +12,8 @@ const theme = extendTheme({
       variants: {
         solid: () => solidButton(),
         secondary: () => secondaryButton(),
+        primaryInverse: () => primaryInverseButton(),
+        secondaryInverse: () => secondaryInverseButton(),
       },
     },
   },
