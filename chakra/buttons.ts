@@ -5,12 +5,12 @@ export const baseStyles: ChakraProps = {
   borderRadius: "50px",
   minWidth: "max-content",
   textTransform: "capitalize",
+  color: "white",
 };
 
 export const solidButton = () => {
   const styles: ChakraProps = {
     bg: RED_100,
-    color: "white",
     _hover: {
       bg: RED_100_HOVER,
     },
@@ -22,7 +22,6 @@ export const solidButton = () => {
 export const secondaryButton = () => {
   return {
     bg: BLUE_100,
-    color: "white",
     _hover: {
       bg: BLUE_100_HOVER,
     },
