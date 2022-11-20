@@ -28,3 +28,27 @@ export const secondaryButton = () => {
     ...baseStyles,
   };
 };
+
+export const secondaryInverseButton = () => {
+  return {
+    border: `2px solid ${BLUE_100}`,
+    _hover: {
+      bg: BLUE_100,
+      color: "white",
+    },
+    ...baseStyles,
+    color: BLUE_100,
+  };
+};
+
+export const primaryInverseButton = () => {
+  return {
+    border: `2px solid ${RED_100}`,
+    _hover: {
+      bg: RED_100,
+      color: "white",
+    },
+    ...baseStyles,
+    color: RED_100,
+  };
+};
