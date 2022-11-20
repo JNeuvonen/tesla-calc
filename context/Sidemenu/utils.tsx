@@ -23,8 +23,8 @@ export const initState = [
         height={sideMenuIconSize}
       />
     ),
-    href: "calculate",
-    link: "calculate",
+    href: "test",
+    link: "test",
   },
   {
     icon: (fill?: string) => (
@@ -34,7 +34,7 @@ export const initState = [
         height={sideMenuIconSize}
       />
     ),
-    href: "calculate",
-    link: "calculate",
+    href: "build",
+    link: "build",
   },
 ] as sidemenuItem[];
