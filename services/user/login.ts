@@ -17,9 +17,7 @@ export const loginRequest = async ({ email, password }: loginReqTypes) => {
     credentials: "include",
   });
 
-  const ret = await res.json();
-
-  return ret;
+  return res;
 };
 
 export const signupRequest = async ({ email, password }: loginReqTypes) => {
@@ -33,7 +31,5 @@ export const signupRequest = async ({ email, password }: loginReqTypes) => {
     credentials: "include",
   });
 
-  const ret = await res.json();
-
-  return ret;
+  return res;
 };
