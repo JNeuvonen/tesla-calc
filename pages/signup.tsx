@@ -27,24 +27,25 @@ const Login = () => {
     setPasswordIsValid(isValid);
     return isValid;
   };
+
   const formIsValid = () => {
     return emailIsValid && passwordIsValid;
   };
 
-  const login = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const email = getInputFieldValById("email");
     const password = getInputFieldValById("password");
 
     if (email && password) {
-      auth.login({ email, password: password });
+      auth.signup({ email, password });
     }
   };
 
   return (
     <ContentStyles>
-      <Heading>Login</Heading>
-      <form onSubmit={login}>
+      <Heading>Signup</Heading>
+      <form onSubmit={submit}>
         <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
           <TextInputLifeFeedback
             label={"email"}
@@ -54,7 +55,7 @@ const Login = () => {
             name={"email"}
             autocomplete={"email"}
             validateFunction={validateEmail}
-            errorText={"Email is required"}
+            errorText={"Valid email is required"}
           ></TextInputLifeFeedback>
 
           <TextInputLifeFeedback
@@ -65,16 +66,16 @@ const Login = () => {
             name={"password"}
             autocomplete={"new-password"}
             validateFunction={validatePassword}
-            errorText={"Password is required"}
+            errorText={"Strong password is required"}
           ></TextInputLifeFeedback>
 
           <Button
             width="250px"
             margin={"0 auto"}
             disabled={!formIsValid()}
-            type="submit"
+            type={"submit"}
           >
-            Login
+            Signup
           </Button>
           <Button
             variant={"primaryInverse"}
@@ -85,18 +86,11 @@ const Login = () => {
             Continue As Guest
           </Button>
 
-          <Flex flexDir={"column"} rowGap={"16px"}>
-            <Link href={"/signup"}>
-              <BlueText textDecoration={"underline"} textAlign={"center"}>
-                Don't have an account?
-              </BlueText>
-            </Link>
-            <Link href={"/signup"}>
-              <BlueText textDecoration={"underline"} textAlign={"center"}>
-                Forgot password?
-              </BlueText>
-            </Link>
-          </Flex>
+          <Link href={"/login"}>
+            <BlueText textDecoration={"underline"} textAlign={"center"}>
+              Already have an account?
+            </BlueText>
+          </Link>
         </Flex>
       </form>
     </ContentStyles>

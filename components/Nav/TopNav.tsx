@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useAuth } from "../../context/auth";
 const TopNav = () => {
   const router = useRouter();
-  const auth = useAuth();
+  const isAuthenticated = useAuth().isAuthenticated();
+  const onClickFunc = () => {
+    router.push(isAuthenticated ? "/premium" : "login");
+  };
+
   return (
     <Flex
       justifyContent={"space-between"}
@@ -14,16 +18,18 @@ const TopNav = () => {
       id={"header"}
       height={"50px"}
       top={0}
+      bg={"white"}
       left={0}
     >
       <Button
         variant={"primaryInverse"}
         height={"30px"}
-        marginRight={"25px"}
+        marginRight={"30px"}
         marginTop={"10px"}
         position={"relative"}
+        onClick={onClickFunc}
       >
-        Go Premium
+        {isAuthenticated ? "Go Premiun" : "Login"}
       </Button>
     </Flex>
   );
