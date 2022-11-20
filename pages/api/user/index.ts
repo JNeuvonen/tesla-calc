@@ -4,18 +4,19 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
 
 type Data = {
-  user?: User | null;
+  user?: User[];
   message?: string | null;
 };
 
 export default async function handler(
   req: NextApiRequest,
-  _res: NextApiResponse<Data>
+  res: NextApiResponse<Data>
 ) {
   if (req.method === "GET") {
     const user = await prisma.user.findMany({});
-    return {
-      user: user,
-    };
+
+    res.status(200).json({ user: user });
   }
+
+  res.status(400).json({ message: "Error" });
 }
