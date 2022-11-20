@@ -18,7 +18,7 @@ type Props = {
   id: string;
   type: string;
   validateFunction: (input: string) => boolean;
-  autocomplete: string;
+  autocomplete?: string;
   errorText?: string;
 };
 const TextInputLifeFeedback = ({
@@ -26,7 +26,7 @@ const TextInputLifeFeedback = ({
   helpText,
   id,
   type,
-  autocomplete,
+  autocomplete = undefined,
   validateFunction,
   errorText,
 }: Props) => {
