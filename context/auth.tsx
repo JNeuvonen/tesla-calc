@@ -61,9 +61,9 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     if (res.user) {
       setUser(res.user);
       router.push("/");
-      setTimeout(() => {
-        setIsFetching(false);
-      }, 500);
+    }
+    if (res) {
+      setIsFetching(false);
     }
   };
 
@@ -83,14 +83,10 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     if (res.user) {
       setUser(res.user);
       router.push("/");
-    } else {
-      setIsFetching(false);
-      return;
     }
-
-    useTimeout(() => {
+    if (res) {
       setIsFetching(false);
-    }, 500);
+    }
   };
 
   const provider = {
