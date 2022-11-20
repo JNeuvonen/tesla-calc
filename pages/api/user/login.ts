@@ -27,7 +27,7 @@ export default async function handler(
       });
 
       if (!user) {
-        res.status(400);
+        res.status(400).send({ message: "Incorrect credentials" });
         return;
       }
 
@@ -59,5 +59,5 @@ export default async function handler(
     }
   }
 
-  res.status(400).send({ message: "Bad Credentials" });
+  res.status(400).send({ message: "Incorrect Credentials" });
 }
