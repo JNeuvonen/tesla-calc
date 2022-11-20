@@ -213,7 +213,7 @@ const MenuButton = ({ menuOnClick }: { menuOnClick: () => void }) => {
       width={"max-content"}
       borderRadius={"50px"}
       position={"fixed"}
-      marginLeft={"25px"}
+      marginLeft={"30px"}
       marginTop={"10px"}
       height={"30px"}
       zIndex={3}
