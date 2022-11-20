@@ -1,4 +1,3 @@
-import { useTimeout } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
