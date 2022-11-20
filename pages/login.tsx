@@ -66,7 +66,7 @@ const Login = () => {
             type={"password"}
             id={"password"}
             name={"password"}
-            autocomplete={"new-password"}
+            autocomplete={"current-password"}
             validateFunction={validatePassword}
             errorText={"Password is required"}
           ></TextInputLifeFeedback>
