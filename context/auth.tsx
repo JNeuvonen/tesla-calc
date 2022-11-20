@@ -1,7 +1,9 @@
+import { useToast, UseToastOptions } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
+import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
   user: User | null;
@@ -19,6 +21,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const [initialFetchDone, setInitialFetchDone] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const router = useRouter();
+  const toast = useToast();
 
   useEffect(() => {
     const asyncFunc = async () => {
@@ -57,13 +60,19 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       password: password as string,
     });
 
-    if (res.user) {
-      setUser(res.user);
+    const data = await res.json();
+
+    if (data.user) {
+      setUser(data.user);
       router.push("/");
     }
-    if (res) {
-      setIsFetching(false);
+
+    if (res.status === 200) {
+      toast(successToast as UseToastOptions);
+    } else {
+      toast(customErrorToast("Email already exists") as UseToastOptions);
     }
+    setIsFetching(false);
   };
 
   const login = async ({
@@ -79,13 +88,20 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       password: password as string,
     });
 
-    if (res.user) {
-      setUser(res.user);
+    const data = await res.json();
+
+    if (res.status === 200) {
+      toast(successToast as UseToastOptions);
+    } else {
+      toast(customErrorToast("Invalid Credentials") as UseToastOptions);
+    }
+
+    if (data.user) {
+      setUser(data.user);
       router.push("/");
     }
-    if (res) {
-      setIsFetching(false);
-    }
+
+    setIsFetching(false);
   };
 
   const provider = {
