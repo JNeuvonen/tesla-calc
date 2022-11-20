@@ -33,10 +33,6 @@ export const openSideMenu = (byClick: boolean) => {
     "content-section"
   ) as HTMLElement;
 
-  const headerSection: HTMLElement = document.getElementById(
-    "header"
-  ) as HTMLElement;
-
   if (byClick) {
     sidemenu.style.transition = "1s";
   } else {

@@ -1,6 +1,5 @@
 import { useTimeout } from "@chakra-ui/react";
 import { User } from "@prisma/client";
-import { useTime } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
