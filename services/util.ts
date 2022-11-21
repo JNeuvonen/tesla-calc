@@ -1,4 +1,7 @@
-export const getRequest = (_endpoint: string) => {};
+export const getRequest = async (endpoint: string) => {
+  const res = await fetch(endpoint);
+  return res;
+};
 
 export const putRequest = (_endpoint: string) => {};
 

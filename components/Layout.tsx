@@ -1,6 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useAuth } from "../context/auth";
 import ContentContainer from "./ContentContainer";
 import SideMenu from "./Nav/Sidemenu/SideMenu";
@@ -12,6 +13,12 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   const path = router.asPath;
   const initAuthFetchDone = useAuth().initialFetchDone;
   const authIsFetching = useAuth().isFetching;
+  const [nonNormalPaths] = useState(["login", "signup", "recover-password"]);
+
+  const isStandardLayoutPath = () => {
+    const filteredPaths = nonNormalPaths.filter((item) => path.includes(item));
+    return filteredPaths.length === 0;
+  };
 
   if (!initAuthFetchDone || authIsFetching) {
     return (
@@ -29,7 +36,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
       <Head>
         <title>Page title</title>
       </Head>
-      {!path.includes("login") && !path.includes("signup") ? (
+      {isStandardLayoutPath() ? (
         <>
           <TopNav />
           <SideMenu />
