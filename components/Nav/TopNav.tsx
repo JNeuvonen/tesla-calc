@@ -29,7 +29,7 @@ const TopNav = () => {
         position={"relative"}
         onClick={onClickFunc}
       >
-        {isAuthenticated ? "Go Premiun" : "Login"}
+        {isAuthenticated ? "Go Premium" : "Login"}
       </Button>
     </Flex>
   );
