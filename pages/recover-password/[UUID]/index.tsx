@@ -5,10 +5,16 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
+<<<<<<< Updated upstream
 import { blueGradient, greyGradient } from "../../../chakra/gradients";
 import TextInputLifeFeedback from "../../../components/TextInputLifeFeedback";
 import { useAuth } from "../../../context/auth";
 import { getRequest } from "../../../services/util";
+=======
+import BlueText from "../../../components/StyleWrappers/BlueText";
+import TextInputLifeFeedback from "../../../components/TextInputLifeFeedback";
+import { getRequest, postRequest } from "../../../services/util";
+>>>>>>> Stashed changes
 import { getInputFieldValById } from "../../../utils/functions/general";
 
 const Login = ({ data, status }: { data: User; status: number }) => {
@@ -32,7 +38,11 @@ const Login = ({ data, status }: { data: User; status: number }) => {
   };
 
   const formIsValid = () => {
+<<<<<<< Updated upstream
     return emailIsValid && passwordIsValid;
+=======
+    return passwordIsValid && repeatIsValid;
+>>>>>>> Stashed changes
   };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
