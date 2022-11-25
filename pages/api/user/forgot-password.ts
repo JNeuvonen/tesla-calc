@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ForgotPasswordLink, User } from "@prisma/client";
+import { User } from "@prisma/client";
+import crypto from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../lib/prisma";
-import crypto from "crypto";
 
 type Data = {
   user?: User | null;
@@ -32,7 +32,7 @@ export default async function handler(
         const datePlus15Min = new Date(new Date().getTime() + 1000 * 60 * 5);
 
         if (passwordRecoveryLink) {
-          if (datePlus15Min < passwordRecoveryLink.createdAt) {
+          if (datePlus15Min > passwordRecoveryLink.createdAt) {
             res.status(400).send({
               message:
                 "5 minutes has not passed since asking for last password recovery link",
@@ -53,7 +53,11 @@ export default async function handler(
         });
 
         res.status(200).send({
-          message: "Password recovery link sent",
+          message: "OK",
+        });
+      } else {
+        res.status(400).send({
+          message: `Username with email ${email} was not found`,
         });
       }
     } catch (err) {
