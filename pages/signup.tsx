@@ -9,6 +9,7 @@ import BlueText from "../components/StyleWrappers/BlueText";
 import TextInputLifeFeedback from "../components/TextInputLifeFeedback";
 import { useAuth } from "../context/auth";
 import { getInputFieldValById } from "../utils/functions/general";
+import { ContentStyles } from "./login";
 
 const Login = () => {
   const [emailIsValid, setEmailIsValid] = useState(false);
@@ -93,6 +94,12 @@ const Login = () => {
               Already have an account?
             </BlueText>
           </Link>
+
+          <Link href={"/get-recovery-link"}>
+            <BlueText textDecoration={"underline"} textAlign={"center"}>
+              Forgot password?
+            </BlueText>
+          </Link>
         </Flex>
       </form>
     </ContentStyles>
@@ -100,25 +107,3 @@ const Login = () => {
 };
 
 export default Login;
-
-// STYLING
-
-export const ContentStyles = ({ children }: { children?: React.ReactNode }) => {
-  return (
-    <Flex bgGradient={greyGradient()} width={"100%"} height={"100vh"}>
-      <Box width={"80%"} height={"100vh"} bgGradient={blueGradient()}></Box>
-      <Flex
-        width={"50%"}
-        height={"100vh"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Box>
-          <Box minHeight={"500px"} width={"550px"}>
-            {children}
-          </Box>
-        </Box>
-      </Flex>
-    </Flex>
-  );
-};
