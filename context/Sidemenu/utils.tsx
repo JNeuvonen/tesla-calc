@@ -1,5 +1,5 @@
 import { CalculatorIcon } from "../../utils/icons";
-import { sidemenuItem } from "./sidemenu";
+import { sidemenuItem } from ".";
 
 const sideMenuIconSize = "24px";
 

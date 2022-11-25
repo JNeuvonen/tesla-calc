@@ -3,10 +3,7 @@ import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import { BLUE_100, RED_100 } from "../../../chakra/colors";
 import { SIDE_MENU_BP, SIDE_MENU_WIDTH } from "../../../chakra/constants";
-import {
-  SidemenuContext,
-  sidemenuItem,
-} from "../../../context/Sidemenu/sidemenu";
+import { SidemenuContext, sidemenuItem } from "../../../context/Sidemenu";
 import useWindowDimensions from "../../../utils/hooks/windowDimensions";
 import { closeSideMenu, openSideMenu } from "./funcs";
 const SideMenu = () => {
