@@ -3,6 +3,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useAuth } from "../context/auth";
+import { stringCapitalizeFirst } from "../utils/functions/general";
 import ContentContainer from "./ContentContainer";
 import SideMenu from "./Nav/Sidemenu/SideMenu";
 import TopNav from "./Nav/TopNav";
@@ -28,9 +29,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   if (!initAuthFetchDone || authIsFetching) {
     return (
       <>
-        <Head>
-          <title>Page title</title>
-        </Head>
+        {getPageTitle()}
         <LoadingSpinner />
       </>
     );
@@ -38,9 +37,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
 
   return (
     <>
-      <Head>
-        <title>Page title</title>
-      </Head>
+      {getPageTitle()}
       {isStandardLayoutPath() ? (
         <>
           <TopNav />
@@ -53,3 +50,22 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     </>
   );
 }
+
+export const getPageTitle = () => {
+  if (typeof window === "undefined") {
+    return (
+      <Head>
+        <title>Authenticating</title>
+      </Head>
+    );
+  }
+  const path = window.location.href;
+  const pathSplitted = path.split("/");
+  const title = pathSplitted.length === 3 ? "Tesla-calc" : pathSplitted[3];
+
+  return (
+    <Head>
+      <title>{stringCapitalizeFirst(title)}</title>
+    </Head>
+  );
+};

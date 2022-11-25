@@ -3,10 +3,7 @@ import Link from "next/link";
 import React, { useContext, useEffect, useState } from "react";
 import { BLUE_100, RED_100 } from "../../../chakra/colors";
 import { SIDE_MENU_BP, SIDE_MENU_WIDTH } from "../../../chakra/constants";
-import {
-  SidemenuContext,
-  sidemenuItem,
-} from "../../../context/Sidemenu/sidemenu";
+import { SidemenuContext, sidemenuItem } from "../../../context/Sidemenu";
 import useWindowDimensions from "../../../utils/hooks/windowDimensions";
 import { closeSideMenu, openSideMenu } from "./funcs";
 const SideMenu = () => {
@@ -63,6 +60,7 @@ const SideMenu = () => {
         <LogoSection
           icon={sidemenuButton.sidemenuLogoIcon}
           href={sidemenuButton.sidemenuLogoHref}
+          linkOnClickFunc={linkOnClickFunc}
         ></LogoSection>
         {mounted && (
           <MenuItems
@@ -123,15 +121,23 @@ const MenuItem = ({
   linkOnClickFunc: () => void;
 }) => {
   const [hover, setHover] = useState(false);
+  const pagesWithTabsHighlighted = () => {
+    return (
+      menuItem.href === "calculate/quarterly" &&
+      window.location.href.includes("calculate")
+    );
+  };
+
   const isMenuitemHighlighted = () => {
     if (typeof window !== "undefined") {
       const path = window.location.href;
-      return path.includes(menuItem.href);
+      return path.includes(menuItem.href) || pagesWithTabsHighlighted();
     }
     return false;
   };
+
   return (
-    <Link href={menuItem.href}>
+    <Link href={menuItem.href} replace>
       <Flex
         opacity={isMenuitemHighlighted() ? "1" : "0.8"}
         {...textStyles}
@@ -165,10 +171,12 @@ const LogoSection = ({
   icon,
   text,
   href,
+  linkOnClickFunc,
 }: {
   icon: (fill?: string) => JSX.Element;
   text?: string;
   href: string;
+  linkOnClickFunc: () => void;
 }) => {
   const [hover, setHover] = useState(false);
   return (
@@ -179,6 +187,7 @@ const LogoSection = ({
         alignItems={"center"}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
+        onClick={linkOnClickFunc}
       >
         <Box>{icon(RED_100)}</Box>
         <Box>{text}</Box>

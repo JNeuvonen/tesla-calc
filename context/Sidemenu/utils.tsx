@@ -1,5 +1,5 @@
 import { CalculatorIcon } from "../../utils/icons";
-import { sidemenuItem } from "./sidemenu";
+import { sidemenuItem } from ".";
 
 const sideMenuIconSize = "24px";
 
@@ -12,7 +12,7 @@ export const initState = [
         height={sideMenuIconSize}
       />
     ),
-    href: "calculate",
+    href: "/calculate/quarterly",
     link: "calculate",
   },
   {
@@ -23,9 +23,10 @@ export const initState = [
         height={sideMenuIconSize}
       />
     ),
-    href: "test",
+    href: "/test",
     link: "test",
   },
+
   {
     icon: (fill?: string) => (
       <CalculatorIcon
@@ -34,7 +35,7 @@ export const initState = [
         height={sideMenuIconSize}
       />
     ),
-    href: "build",
+    href: "/build",
     link: "build",
   },
 ] as sidemenuItem[];
