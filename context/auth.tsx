@@ -3,6 +3,7 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
+import { postRequest } from "../services/util";
 import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
@@ -25,15 +26,16 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
 
   useEffect(() => {
     const asyncFunc = async () => {
-      //const res = await loginRequest({
-      //  email: process.env.NEXT_PUBLIC_TEST_USER_EMAIL as string,
-      //  password: process.env.NEXT_PUBLIC_TEST_USER_PASSWORD as string,
-      //});
-      //if (res.user) {
-      //  setUser(res.user);
-      //}
+      const res = await postRequest({ endpoint: "user/authenticate-cookie" });
 
-      setInitialFetchDone(true);
+      if (res && res.message === "OK") {
+        setInitialFetchDone(true);
+        setIsFetching(false);
+        setUser(res.user);
+      } else {
+        setInitialFetchDone(true);
+        setIsFetching(false);
+      }
     };
 
     asyncFunc();
@@ -91,7 +93,6 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     const data = await res.json();
 
     if (res.status === 200) {
-      toast(successToast as UseToastOptions);
     } else {
       toast(customErrorToast("Invalid Credentials") as UseToastOptions);
     }
