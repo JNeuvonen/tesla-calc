@@ -24,6 +24,16 @@ export const customWarningToast = (content: string) => {
   };
 };
 
+export const customSuccessToast = (content: string) => {
+  return {
+    title: content,
+    position: "top-right",
+    status: "success",
+    duration: 9000,
+    isClosable: true,
+  };
+};
+
 export const customErrorToast = (content: string) => {
   return {
     title: content,
