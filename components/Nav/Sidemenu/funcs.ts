@@ -10,7 +10,7 @@ export const closeSideMenu = (byClick: boolean) => {
   ) as HTMLElement;
 
   if (byClick) {
-    sidemenu.style.transition = "1s";
+    sidemenu.style.transition = "0.65s cubic-bezier(0.42, 0, 0.58, 1)";
   } else {
     sidemenu.style.transition = "0s";
 
@@ -34,7 +34,7 @@ export const openSideMenu = (byClick: boolean) => {
   ) as HTMLElement;
 
   if (byClick) {
-    sidemenu.style.transition = "1s";
+    sidemenu.style.transition = "0.65s cubic-bezier(0.42, 0, 0.58, 1)";
   } else {
     sidemenu.style.transition = "0s";
 
