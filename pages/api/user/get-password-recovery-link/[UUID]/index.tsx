@@ -28,6 +28,7 @@ export default async function handler(
         res.status(200).send({
           user: passwordRecoveryLink?.User,
         });
+        return;
       }
     }
   } catch (err) {
