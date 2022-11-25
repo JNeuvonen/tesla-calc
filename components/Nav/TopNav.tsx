@@ -1,8 +1,11 @@
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { SIDE_MENU_WIDTH } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
+import useWindowDimensions from "../../utils/hooks/windowDimensions";
 const TopNav = () => {
   const router = useRouter();
+  const { width } = useWindowDimensions();
   const isAuthenticated = useAuth().isAuthenticated();
   const onClickFunc = () => {
     router.push(isAuthenticated ? "/premium" : "login");
@@ -13,12 +16,12 @@ const TopNav = () => {
       justifyContent={"space-between"}
       flexDir={"row-reverse"}
       position={"fixed"}
+      width={`calc(100% - ${SIDE_MENU_WIDTH})`}
+      marginLeft={SIDE_MENU_WIDTH}
       zIndex={2}
-      width={"100%"}
       id={"header"}
       height={"50px"}
       top={0}
-      bg={"white"}
       left={0}
     >
       <Button
@@ -31,6 +34,12 @@ const TopNav = () => {
       >
         {isAuthenticated ? "Go Premium" : "Login"}
       </Button>
+
+      {width > 1000 && (
+        <Heading fontSize={"24px"} marginTop={"12px"} marginLeft={"24px"}>
+          Calculate
+        </Heading>
+      )}
     </Flex>
   );
 };
