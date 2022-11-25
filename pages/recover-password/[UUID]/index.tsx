@@ -12,10 +12,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isStrongPassword from "validator/lib/isStrongPassword";
-import { blueGradient, greyGradient } from "../../../chakra/gradients";
 import BlueText from "../../../components/StyleWrappers/BlueText";
 import TextInputLifeFeedback from "../../../components/TextInputLifeFeedback";
-import { useAuth } from "../../../context/auth";
 import { getRequest, postRequest } from "../../../services/util";
 import { getInputFieldValById } from "../../../utils/functions/general";
 import { customErrorToast, customSuccessToast } from "../../../utils/toasts";
@@ -53,7 +51,7 @@ const Login = ({
   };
 
   const formIsValid = () => {
-    return passwordIsValid;
+    return passwordIsValid && repeatIsValid;
   };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
