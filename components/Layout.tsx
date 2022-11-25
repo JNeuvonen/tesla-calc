@@ -13,7 +13,12 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   const path = router.asPath;
   const initAuthFetchDone = useAuth().initialFetchDone;
   const authIsFetching = useAuth().isFetching;
-  const [nonNormalPaths] = useState(["login", "signup", "recover-password"]);
+  const [nonNormalPaths] = useState([
+    "login",
+    "signup",
+    "recover-password",
+    "get-recovery-link",
+  ]);
 
   const isStandardLayoutPath = () => {
     const filteredPaths = nonNormalPaths.filter((item) => path.includes(item));
