@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   Heading,
@@ -10,7 +9,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isEmail from "validator/lib/isEmail";
-import { blueGradient, greyGradient } from "../chakra/gradients";
 import BlueText from "../components/StyleWrappers/BlueText";
 import TextInputLifeFeedback from "../components/TextInputLifeFeedback";
 import { postRequest } from "../services/util";
