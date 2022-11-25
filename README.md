@@ -7,3 +7,13 @@ JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFt
 NEXT_PUBLIC_TEST_USER_EMAIL="neuvonenjarno@gmail.com"
 NEXT_PUBLIC_TEST_USER_PASSWORD="Player123"
 ```
+
+### Dev env
+```
+DATABASE_URL="postgresql://doadmin:AVNS_0ZJssG6Pymug01_2FcV@db-postgresql-nyc1-79996-do-user-10962206-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require"
+JWT_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+NEXT_PUBLIC_BACKEND_HOST="https://tesla-calc.vercel.app/api/"
+NODE_ENV=development
+NEXT_PUBLIC_TEST_USER_EMAIL="neuvonenjarno@gmail.com"
+NEXT_PUBLIC_TEST_USER_PASSWORD="Player123"
+```
