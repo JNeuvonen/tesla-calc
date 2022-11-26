@@ -17,6 +17,16 @@ export const user = async () => {
         email: process.env.NEXT_PUBLIC_TEST_USER_EMAIL as string,
         password: hashedPw,
         UUID: UUID,
+        type: "driver",
+      },
+    });
+
+    await prisma.user.create({
+      data: {
+        email: "asiakas@gmail.com" as string,
+        password: hashedPw,
+        UUID: crypto.randomUUID(),
+        type: "client",
       },
     });
   } catch (err) {
