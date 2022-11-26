@@ -13,6 +13,7 @@ type authContext = {
   isAuthenticated: () => boolean;
   signup: ({ email, password }: { email: string; password: string }) => void;
   isFetching: boolean;
+  position: GeolocationPosition | null;
 };
 
 const AuthContext = createContext<authContext>({} as authContext);
@@ -21,10 +22,14 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [initialFetchDone, setInitialFetchDone] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [position, setPosition] = useState<GeolocationPosition | null>(null);
   const router = useRouter();
   const toast = useToast();
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setPosition(position);
+    });
     const asyncFunc = async () => {
       const res = await postRequest({ endpoint: "user/authenticate-cookie" });
 
@@ -58,8 +63,8 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     setIsFetching(true);
 
     const res = await signupRequest({
-      email: email as string,
-      password: password as string,
+      email: email,
+      password: password,
     });
 
     const data = await res.json();
@@ -86,13 +91,14 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   }) => {
     setIsFetching(true);
     const res = await loginRequest({
-      email: email as string,
-      password: password as string,
+      email: email,
+      password: password,
     });
 
     const data = await res.json();
 
     if (res.status === 200) {
+      setUser(data.user);
     } else {
       toast(customErrorToast("Invalid Credentials") as UseToastOptions);
     }
@@ -112,6 +118,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     isAuthenticated,
     signup,
     isFetching,
+    position,
   };
 
   return (
