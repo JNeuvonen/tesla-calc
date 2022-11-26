@@ -1,6 +1,7 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { BrandLogo } from "../../utils/icons";
-import { initState } from "./utils";
+import { useAuth } from "../auth";
+import { initStateClient, initStateDriver } from "./utils";
 
 export type sidemenuItem = {
   href: string;
@@ -30,7 +31,13 @@ export const SidemenuProvider = ({
 }: {
   children?: React.ReactNode;
 }) => {
-  const [menuitems, setMenuitems] = useState(initState);
+  const [menuitems, setMenuitems] = useState(initStateClient);
+  const userContext = useAuth();
+  useEffect(() => {
+    if (userContext.user?.type === "driver") {
+      setMenuitems(initStateDriver);
+    }
+  }, [userContext.user?.type]);
   const [upperIcon, setUpperIcon] = useState({
     sidemenuLogoIcon: () => <BrandLogo />,
     sidemenuLogoHref: "/",
