@@ -32,7 +32,7 @@ const TopNav = () => {
         position={"relative"}
         onClick={onClickFunc}
       >
-        {isAuthenticated ? "Go Premium" : "Login"}
+        {isAuthenticated ? "Account" : "Login"}
       </Button>
 
       {width > 1000 && (
