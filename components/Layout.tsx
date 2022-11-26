@@ -61,7 +61,7 @@ export const getPageTitle = () => {
   }
   const path = window.location.href;
   const pathSplitted = path.split("/");
-  const title = pathSplitted.length === 3 ? "Tesla-calc" : pathSplitted[3];
+  const title = pathSplitted.length === 4 ? "Tesla-calc" : pathSplitted[3];
 
   return (
     <Head>
