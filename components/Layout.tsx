@@ -55,7 +55,7 @@ export const getPageTitle = () => {
   if (typeof window === "undefined") {
     return (
       <Head>
-        <title>Authenticating</title>
+        <title>Loading...</title>
       </Head>
     );
   }
