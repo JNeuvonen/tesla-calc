@@ -9,7 +9,9 @@
     "lint": "next lint",
     "seed": "ts-node prisma/seed/seed.ts",
     "del-db": "ts-node prisma/seed/del-all.ts",
-    "postinstall": "prisma generate"
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "prisma:generate": "prisma generate"
+    
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.1",
