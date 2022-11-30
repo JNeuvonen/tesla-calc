@@ -1,10 +1,16 @@
-import { Box, Divider, Flex } from "@chakra-ui/react";
+import { AspectRatio, Box, Divider, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GREY_100 } from "../../chakra/colors";
 import { generateNewHref, stringIncludes } from "../../utils/functions/general";
 
-export default function PageTabs({ headers }: { headers: string[] }) {
+export default function PageTabs({
+  headers,
+  disableAllLinks = false,
+}: {
+  headers: string[];
+  disableAllLinks?: boolean;
+}) {
   const router = useRouter();
   const { asPath } = router;
 
@@ -12,7 +18,9 @@ export default function PageTabs({ headers }: { headers: string[] }) {
     <ContentStyleWrapper>
       <Flex columnGap={"16px"} rowGap={"16px"} flexWrap={"wrap"}>
         {headers.map((item, i: number) => {
-          const activated = stringIncludes(asPath, item);
+          const activated = !disableAllLinks
+            ? stringIncludes(asPath, generateNewHref(asPath, item, 2))
+            : false;
           return (
             <Link href={generateNewHref(asPath, item, 2)} key={i}>
               <NavItemStyleWrapper activated={activated}>
