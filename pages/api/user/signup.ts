@@ -22,7 +22,7 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const { email, password } = req.body.payload;
+      const { email, password, role, address } = req.body.payload;
 
       const validEmail = isEmail(email);
       const validPassword =
@@ -49,6 +49,8 @@ export default async function handler(
           UUID: UUID,
           email: email,
           password: hashedPw,
+          type: role,
+          address: address,
         },
       });
 

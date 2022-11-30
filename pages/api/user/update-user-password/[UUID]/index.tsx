@@ -1,10 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../../lib/prisma";
+import { UserType } from "../../../../../types/prisma";
+import bcrypt from "bcrypt";
 
 type Data = {
-  user?: User | null;
+  user?: UserType | null;
   message?: string | unknown;
 };
 
@@ -14,22 +15,34 @@ export default async function handler(
 ) {
   const { UUID } = req.query;
 
+  const { newPassword } = req.body.payload;
   try {
     if (UUID) {
-      const passwordRecoveryLink = await prisma.forgotPasswordLink.findFirst({
+      const hashedPw = await bcrypt.hash(newPassword, 5);
+
+      const user = await prisma.user.update({
         where: {
           UUID: UUID as string,
         },
         include: {
-          User: true,
+          ForgotPasswordLink: true,
+        },
+        data: {
+          password: hashedPw,
         },
       });
-      if (passwordRecoveryLink) {
-        res.status(200).send({
-          user: passwordRecoveryLink?.User,
-        });
-        return;
-      }
+
+      await prisma.forgotPasswordLink.delete({
+        where: {
+          ID: user.ForgotPasswordLink?.ID,
+        },
+      });
+
+      res.status(200).send({
+        message: "OK",
+      });
+
+      return;
     }
   } catch (err) {
     res.status(400).send({

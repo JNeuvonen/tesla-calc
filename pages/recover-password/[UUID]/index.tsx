@@ -1,33 +1,38 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  useToast,
+  UseToastOptions,
+} from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
-<<<<<<< Updated upstream
-import { blueGradient, greyGradient } from "../../../chakra/gradients";
-import TextInputLifeFeedback from "../../../components/TextInputLifeFeedback";
-import { useAuth } from "../../../context/auth";
-import { getRequest } from "../../../services/util";
-=======
 import BlueText from "../../../components/StyleWrappers/BlueText";
 import TextInputLifeFeedback from "../../../components/TextInputLifeFeedback";
 import { getRequest, postRequest } from "../../../services/util";
->>>>>>> Stashed changes
 import { getInputFieldValById } from "../../../utils/functions/general";
+import { customErrorToast, customSuccessToast } from "../../../utils/toasts";
+import { ContentStyles } from "../../login";
 
-const Login = ({ data, status }: { data: User; status: number }) => {
-  const [emailIsValid, setEmailIsValid] = useState(false);
+const Login = ({
+  data,
+  status,
+}: {
+  data: User | undefined;
+  status: number;
+}) => {
+  //STATE
   const [passwordIsValid, setPasswordIsValid] = useState(false);
-  const router = useRouter();
-  const auth = useAuth();
+  const [repeatIsValid, setRepeatIsValid] = useState(false);
 
-  const validateEmail = (input: string) => {
-    const isValid = isEmail(input);
-    setEmailIsValid(isValid);
-    return isValid;
-  };
+  //UTIL
+  const router = useRouter();
+  const toast = useToast();
 
   const validatePassword = (input: string) => {
     const isValid = isStrongPassword(input, {
@@ -37,21 +42,39 @@ const Login = ({ data, status }: { data: User; status: number }) => {
     return isValid > 20;
   };
 
+  const validateRepeat = (input: string) => {
+    const password = getInputFieldValById("password");
+
+    const isValid = password === input;
+    setRepeatIsValid(isValid);
+    return isValid;
+  };
+
   const formIsValid = () => {
-<<<<<<< Updated upstream
-    return emailIsValid && passwordIsValid;
-=======
     return passwordIsValid && repeatIsValid;
->>>>>>> Stashed changes
   };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const email = getInputFieldValById("email");
     const password = getInputFieldValById("password");
+    const repeat = getInputFieldValById("password-repeat");
 
-    if (email && password) {
-      auth.signup({ email, password });
+    if (repeat && password) {
+      const res = await postRequest({
+        endpoint: "user/update-user-password/" + data?.UUID,
+        payload: {
+          newPassword: password,
+        },
+      });
+
+      if (res && res.message === "OK") {
+        toast(
+          customSuccessToast("Password succesfully changed") as UseToastOptions
+        );
+        router.push("/login");
+      } else {
+        toast(customErrorToast(res?.message) as UseToastOptions);
+      }
     }
   };
 
@@ -71,19 +94,19 @@ const Login = ({ data, status }: { data: User; status: number }) => {
             id={"password"}
             name={"password"}
             autocomplete={"new-password"}
-            validateFunction={validateEmail}
+            validateFunction={validatePassword}
             errorText={"Strong password is required"}
           ></TextInputLifeFeedback>
 
           <TextInputLifeFeedback
             label={"Repeat Password"}
-            helpText={"Strong password"}
+            helpText={"Passwords match"}
             type={"password"}
-            id={"password"}
+            id={"password-repeat"}
             name={"password"}
             autocomplete={"new-password"}
-            validateFunction={validatePassword}
-            errorText={"Strong password is required"}
+            validateFunction={validateRepeat}
+            errorText={"Repeat password"}
           ></TextInputLifeFeedback>
 
           <Button
@@ -96,33 +119,24 @@ const Login = ({ data, status }: { data: User; status: number }) => {
           </Button>
         </Flex>
       </form>
+
+      <Flex flexDir={"column"} rowGap={"16px"} marginTop={"16px"}>
+        <Link href={"/signup"}>
+          <BlueText textDecoration={"underline"} textAlign={"center"}>
+            Don't have an account?
+          </BlueText>
+        </Link>
+        <Link href={"/signup"}>
+          <BlueText textDecoration={"underline"} textAlign={"center"}>
+            Login
+          </BlueText>
+        </Link>
+      </Flex>
     </ContentStyles>
   );
 };
 
 export default Login;
-
-// STYLING
-
-export const ContentStyles = ({ children }: { children?: React.ReactNode }) => {
-  return (
-    <Flex bgGradient={greyGradient()} width={"100%"} height={"100vh"}>
-      <Box width={"80%"} height={"100vh"} bgGradient={blueGradient()}></Box>
-      <Flex
-        width={"50%"}
-        height={"100vh"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        <Box>
-          <Box minHeight={"500px"} width={"550px"}>
-            {children}
-          </Box>
-        </Box>
-      </Flex>
-    </Flex>
-  );
-};
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   try {
@@ -134,7 +148,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         UUID
     );
 
-    if (res.status === 200) {
+    if (res && res.status === 200) {
       const parsedData = await res.json();
 
       return {
@@ -143,7 +157,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           status: 200,
         },
       };
-    } else {
     }
   } catch (err) {}
 

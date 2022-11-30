@@ -1,39 +1,56 @@
 import { useToast, UseToastOptions } from "@chakra-ui/react";
-import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
+import { postRequest } from "../services/util";
+import { UserType } from "../types/prisma";
 import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
-  user: User | null;
+  user: UserType | null;
   login: ({ email, password }: { email: string; password: string }) => void;
   initialFetchDone: boolean;
   isAuthenticated: () => boolean;
-  signup: ({ email, password }: { email: string; password: string }) => void;
+  signup: ({
+    email,
+    password,
+    role,
+    address,
+  }: {
+    email: string;
+    password: string;
+    role: string;
+    address: string;
+  }) => void;
   isFetching: boolean;
+  position: GeolocationPosition | null;
 };
 
 const AuthContext = createContext<authContext>({} as authContext);
 
 export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [initialFetchDone, setInitialFetchDone] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [position, setPosition] = useState<GeolocationPosition | null>(null);
   const router = useRouter();
   const toast = useToast();
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      setPosition(position);
+    });
     const asyncFunc = async () => {
-      //const res = await loginRequest({
-      //  email: process.env.NEXT_PUBLIC_TEST_USER_EMAIL as string,
-      //  password: process.env.NEXT_PUBLIC_TEST_USER_PASSWORD as string,
-      //});
-      //if (res.user) {
-      //  setUser(res.user);
-      //}
+      const res = await postRequest({ endpoint: "user/authenticate-cookie" });
 
-      setInitialFetchDone(true);
+      if (res && res.message === "OK") {
+        setInitialFetchDone(true);
+        setIsFetching(false);
+        setUser(res.user);
+      } else {
+        setInitialFetchDone(true);
+        setIsFetching(false);
+      }
     };
 
     asyncFunc();
@@ -49,15 +66,21 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const signup = async ({
     email,
     password,
+    role,
+    address,
   }: {
     email: string;
     password: string;
+    role: string;
+    address: string;
   }) => {
     setIsFetching(true);
 
     const res = await signupRequest({
-      email: email as string,
-      password: password as string,
+      email: email,
+      password: password,
+      role: role,
+      address: address,
     });
 
     const data = await res.json();
@@ -84,14 +107,14 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   }) => {
     setIsFetching(true);
     const res = await loginRequest({
-      email: email as string,
-      password: password as string,
+      email: email,
+      password: password,
     });
 
     const data = await res.json();
 
     if (res.status === 200) {
-      toast(successToast as UseToastOptions);
+      setUser(data.user);
     } else {
       toast(customErrorToast("Invalid Credentials") as UseToastOptions);
     }
@@ -111,6 +134,7 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     isAuthenticated,
     signup,
     isFetching,
+    position,
   };
 
   return (

@@ -24,6 +24,12 @@
       "module": "CommonJS"
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "prisma/seed/del-all.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "prisma/seed/del-all.js",
+    "pages/api/createTokenRequest.js"
+  ],
   "exclude": ["node_modules"]
 }
