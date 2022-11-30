@@ -1,10 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../../lib/prisma";
-import { UserType } from "../../../../../types/prisma";
 
 type Data = {
-  user?: UserType | null;
+  user?: User | null;
   message?: string | unknown;
 };
 
