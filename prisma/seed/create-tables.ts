@@ -18,6 +18,7 @@ export const user = async () => {
         password: hashedPw,
         UUID: UUID,
         type: "driver",
+        address: "Piritanaukio 1 B 26",
       },
     });
 
@@ -27,6 +28,7 @@ export const user = async () => {
         password: hashedPw,
         UUID: crypto.randomUUID(),
         type: "client",
+        address: "Koskelantie 31 C 26",
       },
     });
   } catch (err) {

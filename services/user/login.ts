@@ -3,6 +3,8 @@ import { requestHeaders } from "../util";
 type loginReqTypes = {
   email: string;
   password: string;
+  role?: string;
+  address?: string;
 };
 
 export const loginRequest = async ({ email, password }: loginReqTypes) => {
@@ -20,12 +22,17 @@ export const loginRequest = async ({ email, password }: loginReqTypes) => {
   return res;
 };
 
-export const signupRequest = async ({ email, password }: loginReqTypes) => {
+export const signupRequest = async ({
+  email,
+  password,
+  role,
+  address,
+}: loginReqTypes) => {
   const URL = process.env.NEXT_PUBLIC_BACKEND_HOST + "user/signup";
   const res = await fetch(URL, {
     method: "POST",
     body: JSON.stringify({
-      payload: { email, password },
+      payload: { email, password, role, address },
     }),
     headers: requestHeaders,
     credentials: "include",

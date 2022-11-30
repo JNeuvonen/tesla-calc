@@ -11,7 +11,17 @@ type authContext = {
   login: ({ email, password }: { email: string; password: string }) => void;
   initialFetchDone: boolean;
   isAuthenticated: () => boolean;
-  signup: ({ email, password }: { email: string; password: string }) => void;
+  signup: ({
+    email,
+    password,
+    role,
+    address,
+  }: {
+    email: string;
+    password: string;
+    role: string;
+    address: string;
+  }) => void;
   isFetching: boolean;
   position: GeolocationPosition | null;
 };
@@ -56,15 +66,21 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
   const signup = async ({
     email,
     password,
+    role,
+    address,
   }: {
     email: string;
     password: string;
+    role: string;
+    address: string;
   }) => {
     setIsFetching(true);
 
     const res = await signupRequest({
       email: email,
       password: password,
+      role: role,
+      address: address,
     });
 
     const data = await res.json();
