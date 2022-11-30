@@ -1,13 +1,13 @@
 import { useToast, UseToastOptions } from "@chakra-ui/react";
-import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
 import { postRequest } from "../services/util";
+import { UserType } from "../types/prisma";
 import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
-  user: User | null;
+  user: UserType | null;
   login: ({ email, password }: { email: string; password: string }) => void;
   initialFetchDone: boolean;
   isAuthenticated: () => boolean;
@@ -29,7 +29,7 @@ type authContext = {
 const AuthContext = createContext<authContext>({} as authContext);
 
 export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [initialFetchDone, setInitialFetchDone] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [position, setPosition] = useState<GeolocationPosition | null>(null);

@@ -1,5 +1,10 @@
-import { Prisma } from "@prisma/client";
-
-const userType = Prisma.validator<Prisma.UserArgs>()({});
-
-export type UserType = Prisma.UserGetPayload<typeof userType>;
+export type UserType = {
+  ID: number;
+  type: string;
+  UUID: string;
+  email: string;
+  password: string;
+  address: string;
+  createdAt: Date;
+  updatedAt: Date | null;
+};
