@@ -13,7 +13,7 @@ export const initStateClient = [
       />
     ),
     href: "/kuljetukset",
-    link: "Etsi Kuljettaja",
+    link: "Kuljetukset",
   },
   {
     icon: (fill?: string) => (
@@ -23,8 +23,19 @@ export const initStateClient = [
         height={sideMenuIconSize}
       />
     ),
-    href: "/test",
-    link: "test",
+    href: "/tehdyt-ilmoitukset",
+    link: "Ilmoitukset",
+  },
+  {
+    icon: (fill?: string) => (
+      <CalculatorIcon
+        fill={fill}
+        width={sideMenuIconSize}
+        height={sideMenuIconSize}
+      />
+    ),
+    href: "/frequently-asked-questions",
+    link: "FAQ",
   },
 
   {
@@ -35,8 +46,8 @@ export const initStateClient = [
         height={sideMenuIconSize}
       />
     ),
-    href: "/build",
-    link: "build",
+    href: "/tuki",
+    link: "Tuki",
   },
 ] as sidemenuItem[];
 
