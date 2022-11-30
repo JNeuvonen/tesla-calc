@@ -12,7 +12,7 @@ import isStrongPassword from "validator/lib/isStrongPassword";
 import crypto from "crypto";
 
 type Data = {
-  user?: User | null;
+  user?: any;
   message?: string | null;
 };
 
