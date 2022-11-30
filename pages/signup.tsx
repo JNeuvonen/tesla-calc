@@ -107,8 +107,8 @@ const Login = () => {
             helpText={""}
             type={"text"}
             id={"address"}
-            name={"email"}
-            autocomplete={"email"}
+            name={"address"}
+            autocomplete={"address"}
             validateFunction={() => {
               return true;
             }}
