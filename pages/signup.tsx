@@ -48,7 +48,7 @@ const Login = () => {
     const address = getInputFieldValById("address");
 
     if (email && password && address) {
-      auth.signup({ email, password, role, address });
+      auth.signup({ email: email.toLowerCase(), password, role, address });
     }
   };
 
@@ -79,7 +79,7 @@ const Login = () => {
               cursor={"pointer"}
               onClick={() => {
                 setModeSelected("FILL-FORM");
-                setRole("client");
+                setRole("driver");
               }}
             >
               <Flex flexDir={"column"} rowGap={"16px"}>
