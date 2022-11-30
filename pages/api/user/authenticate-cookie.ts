@@ -2,7 +2,7 @@
 import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { parseJWTData } from "../../../lib/auth";
-import prisma from "../../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 
 type Data = {
   user?: User | null;

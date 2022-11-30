@@ -8,7 +8,7 @@ import { CookieSerializeOptions } from "next/dist/server/web/spec-extension/cook
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
 import { authCookieSettings } from "../../../lib/authCookieSettings";
-import prisma from "../../../lib/prisma";
+import { prisma } from "../../../lib/prisma";
 
 type Data = {
   user?: any;
