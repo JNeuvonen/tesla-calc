@@ -151,7 +151,7 @@ const Login = () => {
             margin={"0 auto"}
             onClick={() => router.push("/")}
           >
-            Continue As Guest
+            Jatka vieraana
           </Button>
 
           <Link href={"/login"}>
