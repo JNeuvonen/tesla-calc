@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "ts-node prisma/seed/seed.ts",
-    "del-db": "ts-node prisma/seed/del-all.ts"
+    "del-db": "ts-node prisma/seed/del-all.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.4.1",
