@@ -1,15 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
+import Cookies from "cookies";
+import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CookieSerializeOptions } from "next/dist/server/web/spec-extension/cookies/types";
-import prisma from "../../../lib/prisma";
-import jwt from "jsonwebtoken";
-import Cookies from "cookies";
-import { authCookieSettings } from "../../../lib/authCookieSettings";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
-import crypto from "crypto";
+import { authCookieSettings } from "../../../lib/authCookieSettings";
+import prisma from "../../../lib/prisma";
 
 type Data = {
   user?: any;
