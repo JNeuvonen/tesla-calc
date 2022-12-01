@@ -1,8 +1,6 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { useState } from "react";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import LuoIlmoitus from "../../components/Kuljetukset/luoIlmoitus";
-import DefaultMap from "../../components/Maps/default-map";
+import CreateListing from "../../components/Kuljetukset/createListing";
 import PageTabs from "../../components/PageTabs";
 import { getPathLastItem } from "../../utils/functions/general";
 
@@ -11,10 +9,9 @@ export default function Kuljetukset() {
   const pathLastItem = getPathLastItem(window.location.href);
   //PAGE CONTENT
   const [pathToComponentDict] = useState({
-    "luo-ilmoitus": <LuoIlmoitus />,
-    "tehdyt-ilmoitukset": <LuoIlmoitus />,
+    "luo-ilmoitus": <CreateListing />,
+    "tehdyt-ilmoitukset": <CreateListing />,
   });
-  const [value, setValue] = useState("");
 
   return (
     <Box>
