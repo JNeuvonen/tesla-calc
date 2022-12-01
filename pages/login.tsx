@@ -41,7 +41,7 @@ const Login = () => {
     const password = getInputFieldValById("password");
 
     if (email && password) {
-      auth.login({ email, password: password });
+      auth.login({ email: email.toLowerCase(), password: password });
     }
   };
 

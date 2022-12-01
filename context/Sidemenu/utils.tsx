@@ -23,17 +23,6 @@ export const initStateClient = [
         height={sideMenuIconSize}
       />
     ),
-    href: "/tehdyt-ilmoitukset",
-    link: "Ilmoitukset",
-  },
-  {
-    icon: (fill?: string) => (
-      <CalculatorIcon
-        fill={fill}
-        width={sideMenuIconSize}
-        height={sideMenuIconSize}
-      />
-    ),
     href: "/frequently-asked-questions",
     link: "FAQ",
   },

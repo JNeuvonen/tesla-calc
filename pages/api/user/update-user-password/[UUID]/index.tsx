@@ -1,8 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import prisma from "../../../../../lib/prisma";
-import { UserType } from "../../../../../types/prisma";
 import bcrypt from "bcrypt";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { prisma } from "../../../../../lib/prisma";
+import { UserType } from "../../../../../types/prisma";
 
 type Data = {
   user?: UserType | null;

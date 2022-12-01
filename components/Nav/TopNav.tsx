@@ -20,6 +20,7 @@ const TopNav = () => {
       marginLeft={SIDE_MENU_WIDTH}
       zIndex={2}
       id={"header"}
+      bg={"white"}
       height={"50px"}
       top={0}
       left={0}
