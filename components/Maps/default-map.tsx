@@ -1,11 +1,6 @@
 import { GoogleMap, MarkerF, useLoadScript } from "@react-google-maps/api";
-import { useState } from "react";
 import { useAuth } from "../../context/auth";
-import { GoogleLngLatToAddress } from "../../types/responses/geocode";
-import {
-  destructureLngLtFromGeoloc,
-  langlatToAddress,
-} from "../../utils/functions/general";
+import { destructureLngLtFromGeoloc } from "../../utils/functions/general";
 import { boxesUrl, destinationUrl } from "../../utils/map/constants";
 import LoadingSpinner from "../Util/LoadingSpinner";
 import DrawRouteComponent from "./direction-service";
@@ -25,8 +20,8 @@ export default function DefaultMap() {
     const lng = e.latLng?.lng();
 
     if (lat && lng) {
-      const address = await langlatToAddress({ lat, lng });
-      const json: GoogleLngLatToAddress = await address?.json();
+      //const address = await langlatToAddress({ lat, lng });
+      //const _json: GoogleLngLatToAddress = await address?.json();
     }
   };
 

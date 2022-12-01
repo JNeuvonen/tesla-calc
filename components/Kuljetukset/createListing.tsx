@@ -37,7 +37,7 @@ export type WeightCategory = "NONE" | "LIGHT" | "MEDIUM" | "HEAVY" | "HEAVY-XL";
 export default function CreateListing() {
   //STATE
   const [originAddress, setOriginAddress] = useState("");
-  const [targetAddress, setTargetAddress] = useState("");
+  const [_targetAddress, setTargetAddress] = useState("");
   const [attachments, setAttachments] = useState<null | FileList>(null);
   const [selectedMainAttachment, setSelectedMainAttachment] = useState(0);
   const [textDescription, setTextDescription] = useState("");

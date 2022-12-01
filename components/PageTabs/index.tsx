@@ -1,4 +1,4 @@
-import { AspectRatio, Box, Divider, Flex } from "@chakra-ui/react";
+import { Box, Divider, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GREY_100 } from "../../chakra/colors";

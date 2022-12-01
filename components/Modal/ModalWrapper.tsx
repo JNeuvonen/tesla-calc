@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Divider,
   Heading,
   Modal,
@@ -13,7 +12,6 @@ import {
   UseDisclosureProps,
 } from "@chakra-ui/react";
 import useWindowDimensions from "../../utils/hooks/windowDimensions";
-import DividerWrapper from "../StyleWrappers/DividerWrapper";
 
 type Props = {
   modalTitle?: string | React.ReactNode;
