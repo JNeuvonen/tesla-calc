@@ -8,12 +8,12 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
-import { useAuth } from "../../context/auth";
-import { scrollIdIntoView } from "../../utils/functions/general";
-import { customErrorToast } from "../../utils/toasts";
-import ModalWrapper from "../Modal/ModalWrapper";
-import DividerWrapper from "../StyleWrappers/DividerWrapper";
-import PageContentHeading from "../StyleWrappers/PageContentHeading";
+import { useAuth } from "../../../context/auth";
+import { scrollIdIntoView } from "../../../utils/functions/general";
+import { customErrorToast } from "../../../utils/toasts";
+import ModalWrapper from "../../Modal/ModalWrapper";
+import DividerWrapper from "../../StyleWrappers/DividerWrapper";
+import PageContentHeading from "../../StyleWrappers/PageContentHeading";
 import CargoDetails from "./CargoDetails";
 import IsCargoPrecious from "./CargoRisk";
 import ListingTimeSensitivity from "./ListingTimeSensitivity";

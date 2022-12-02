@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import GreyText from "../StyleWrappers/GreyText";
+import GreyText from "../../StyleWrappers/GreyText";
 
 export default function SubmitModalContent() {
   return (
