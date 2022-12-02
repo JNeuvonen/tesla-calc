@@ -105,6 +105,36 @@ export const addressComparison = (a: string, b: string) => {
   }
 };
 
+export const getDateFormatted = (
+  date: Date | Date[],
+  dateType: "RANGE" | "SINGULAR_DATE" | "AFTER_DATE"
+) => {
+  if (dateType === "RANGE") {
+    const dateRange = date as Date[];
+
+    if (dateRange?.length > 1) {
+      const rangeStart = dateRange[0].toLocaleDateString("fi-FI");
+      const rangeEnd = dateRange[1].toLocaleDateString("fi-FI");
+
+      return `Kuljetus välillä ${rangeStart} - ${rangeEnd}`;
+    }
+  }
+
+  if (Array.isArray(date)) {
+    const dateRange = date as Date[];
+
+    const rangeStart = dateRange[0].toLocaleDateString("fi-FI");
+    const rangeEnd = dateRange[1].toLocaleDateString("fi-FI");
+
+    return `Kuljetus välillä ${rangeStart} - ${rangeEnd}`;
+  }
+
+  const isDate = date as Date;
+  return dateType === "SINGULAR_DATE"
+    ? `Kuljetuksen toivottu ajankohta ${isDate.toLocaleDateString("en-FI")}`
+    : `Kuljetus ${isDate.toLocaleDateString("en-FI")} jälkeen`;
+};
+
 export const weightCategoryFormatted = (weightCategory: WeightCategory) => {
   if (weightCategory === "LIGHT") {
     return "Alle 50 kg";
