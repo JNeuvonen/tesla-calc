@@ -8,7 +8,7 @@ const TopNav = () => {
   const { width } = useWindowDimensions();
   const isAuthenticated = useAuth().isAuthenticated();
   const onClickFunc = () => {
-    router.push(isAuthenticated ? "/premium" : "login");
+    router.push(isAuthenticated ? "/premium" : "/login");
   };
 
   return (
