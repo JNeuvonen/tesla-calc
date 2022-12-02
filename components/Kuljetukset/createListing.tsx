@@ -7,8 +7,12 @@ import {
   Textarea,
   Tooltip,
   useDisclosure,
+  useToast,
+  UseToastOptions,
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GREY_100 } from "../../chakra/colors";
 import { BOX_SHADOW_100, SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
@@ -16,6 +20,7 @@ import { useAuth } from "../../context/auth";
 import {
   getDateFormatted,
   getInputFieldValById,
+  scrollIdIntoView,
   weightCategoryFormatted,
 } from "../../utils/functions/general";
 import useWindowDimensions from "../../utils/hooks/windowDimensions";
@@ -26,6 +31,7 @@ import {
   TrolleyIcon,
   WarningIcon,
 } from "../../utils/icons";
+import { customErrorToast } from "../../utils/toasts";
 import ModalFooterWrapper from "../Modal/ModalFooter";
 import ModalWrapper from "../Modal/ModalWrapper";
 import BorderDiv from "../StyleWrappers/BorderDiv";
@@ -33,16 +39,23 @@ import DividerWrapper from "../StyleWrappers/DividerWrapper";
 import GreyText from "../StyleWrappers/GreyText";
 import PageContentHeading from "../StyleWrappers/PageContentHeading";
 import FileHandler from "../Util/FileHandler";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 
 export type WeightCategory = "NONE" | "LIGHT" | "MEDIUM" | "HEAVY" | "HEAVY-XL";
 export type ListingTimeSensitivityQuery = "NOT_ANSWERED" | "YES" | "NO";
+export type PreciousCargo = "NOT_ANSWERED" | "IS_PRECIOUS" | "NOT_PRECIOUS";
+export type DateOptions = "RANGE" | "AFTER_DATE" | "SINGULAR_DATE";
+export type ErroredFieldOptions =
+  | "NONE"
+  | "target-address"
+  | "cargo-details"
+  | "drivers-risk"
+  | "listing-time-sensitivity";
 
 export default function CreateListing() {
   //STATE
+  const submitModalDisclosure = useDisclosure();
   const [originAddress, setOriginAddress] = useState("");
-  const [_targetAddress, setTargetAddress] = useState("");
+  const [targetAddress, setTargetAddress] = useState("");
   const [attachments, setAttachments] = useState<null | FileList>(null);
   const [selectedMainAttachment, setSelectedMainAttachment] = useState(0);
   const [textDescription, setTextDescription] = useState("");
@@ -51,18 +64,91 @@ export default function CreateListing() {
   const [isListingTimeSensitive, setIsListingTimeSensitive] =
     useState<ListingTimeSensitivityQuery>("NOT_ANSWERED");
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [dateType, setDateType] = useState<
-    "RANGE" | "SINGULAR_DATE" | "AFTER_DATE"
-  >("AFTER_DATE");
+  const [dateType, setDateType] = useState<DateOptions>("AFTER_DATE");
+  const [isCargoPrecious, setIsCargoPrecious] =
+    useState<PreciousCargo>("NOT_ANSWERED");
+  const [_distanceOfDrive, _setDistanceOfDrive] = useState(null);
+
+  const [erroredField, setErroredField] = useState<ErroredFieldOptions>("NONE");
 
   //CONTEXT
   const user = useAuth();
+
+  //UTIL
+  const toast = useToast();
 
   useEffect(() => {
     if (user) {
       setOriginAddress(user.user?.address as string);
     }
   }, [user]);
+
+  const submitForm = async () => {
+    let formIsValid = true;
+    let formErrorToast = "";
+
+    if (!originAddress) {
+      scrollIdIntoView("origin-address");
+      formIsValid = false;
+      formErrorToast = "Tavaran lähtösijainti puuttuu lomakkeesta";
+    } else if (!targetAddress) {
+      scrollIdIntoView("target-address");
+      formIsValid = false;
+      formErrorToast = "Tavaran määränpää puuttuu lomakkeesta";
+      setErroredField("target-address");
+    } else if (!attachments) {
+      formIsValid = false;
+      formErrorToast = "Kuvat tavarasta puuttuvat lomakkeesta";
+      scrollIdIntoView("cargo-details");
+      setErroredField("cargo-details");
+    } else if (estimatedWeight === "NONE") {
+      formIsValid = false;
+      formErrorToast = "Arvio tavaran painosta puuttuu";
+      scrollIdIntoView("cargo-details");
+    } else if (isListingTimeSensitive === "NOT_ANSWERED") {
+      formIsValid = false;
+      formErrorToast =
+        "Kuljetuksen ajankohdasta ei ole annettu riittävästi tietoa";
+      scrollIdIntoView("listing-time-sensitivity");
+      setErroredField("listing-time-sensitivity");
+    } else if (isCargoPrecious === "NOT_ANSWERED") {
+      formIsValid = false;
+      formErrorToast = "Kuljettajan vastuu -kohtaan ei ole vastattu";
+      scrollIdIntoView("drivers-risk");
+      setErroredField("drivers-risk");
+    }
+
+    //const _payload = {
+    //  originAddress,
+    //  targetAddress,
+    //  attachments,
+    //  selectedMainAttachmentIndex: selectedMainAttachment,
+    //  textDescription,
+    //  estimatedWeight,
+    //  isListingTimeSensitive,
+    //  selectedDate,
+    //  dateType,
+    //  isCargoPrecious,
+    //};
+
+    if (formIsValid) {
+      submitModalDisclosure.onOpen();
+
+      //const urlSearchParams = new URLSearchParams({
+      //  origin: originAddress,
+      //  //@ts-ignore
+      //  target: targetAddress.label,
+      //});
+
+      //const endpoint =
+      process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
+
+      //const res = await fetch(endpoint + urlSearchParams);
+      //const _parsedRes = await res.json();
+    } else {
+      toast(customErrorToast(formErrorToast) as UseToastOptions);
+    }
+  };
 
   return (
     <Box>
@@ -72,7 +158,10 @@ export default function CreateListing() {
         setOriginAddress={setOriginAddress}
       />
       <DividerWrapper verticalMargin={"32px"} />
-      <TargetAddress setTargetAddress={setTargetAddress} />
+      <TargetAddress
+        setTargetAddress={setTargetAddress}
+        erroredField={erroredField}
+      />
       <DividerWrapper verticalMargin={"32px"} />
       <CargoDetails
         setAttachments={setAttachments}
@@ -83,6 +172,7 @@ export default function CreateListing() {
         setTextDescription={setTextDescription}
         estimatedWeight={estimatedWeight}
         setEstimatedWeight={setEstimatedWeight}
+        erroredField={erroredField}
       />
       <DividerWrapper verticalMargin={"32px"} />
 
@@ -93,51 +183,176 @@ export default function CreateListing() {
         setSelectedDate={setSelectedDate}
         dateType={dateType}
         setDateType={setDateType}
+        erroredField={erroredField}
       />
 
       <DividerWrapper verticalMargin={"32px"} />
 
-      <IsCargoPrecious />
+      <IsCargoPrecious
+        isCargoPrecious={isCargoPrecious}
+        setIsCargoPrecious={setIsCargoPrecious}
+        erroredField={erroredField}
+      />
 
       <DividerWrapper verticalMargin={"32px"} />
 
-      <SubmitFooter />
+      <SubmitFooter submit={submitForm} />
+
+      <ModalWrapper
+        disclosure={submitModalDisclosure}
+        footerEnabled={false}
+        modalTitle={"Tarkista tiedot"}
+        modalContent={
+          <Box paddingBottom={"30px"}>
+            <GreyText>
+              Haluatko vielä varmistaa ovatko antamasi tiedot oikein?
+            </GreyText>
+
+            <Flex
+              width={"100%"}
+              flexDir={"column"}
+              rowGap={"16px"}
+              marginTop={"16px"}
+            >
+              <Button width={"100%"} textTransform={"initial"}>
+                En, lomake on valmis
+              </Button>
+              <Button
+                width={"100%"}
+                variant={"primaryInverse"}
+                textTransform={"initial"}
+              >
+                Palaa lomaakkeeseen
+              </Button>
+            </Flex>
+          </Box>
+        }
+        modalWidth={"sm"}
+      />
     </Box>
   );
 }
 
-const IsCargoPrecious = () => {
-  return (
-    <Box>
-      <Text fontSize={"19px"} fontWeight={"bold"}>
-        Ajankohta
-      </Text>
-      <BorderDiv maxW={"800px"} width={"100%"} marginTop={"5px"}>
-        <Flex alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontWeight={"500"}>
-            Vaatiiko tavaran kuljettaminen erityistä huolellisuutta?
-          </Text>
+const IsCargoPrecious = ({
+  isCargoPrecious,
+  setIsCargoPrecious,
+  erroredField,
+}: {
+  isCargoPrecious: PreciousCargo;
+  setIsCargoPrecious: React.Dispatch<React.SetStateAction<PreciousCargo>>;
+  erroredField: ErroredFieldOptions;
+}) => {
+  const conditionalRendering = () => {
+    if (isCargoPrecious === "NOT_ANSWERED") {
+      return (
+        <BorderDiv
+          maxW={"800px"}
+          width={"100%"}
+          marginTop={"5px"}
+          isErrored={erroredField === "drivers-risk"}
+        >
+          <Flex alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontWeight={"500"}>
+              Onko tavara helposti rikkoutuvaa tai vaatiiko tavaran
+              kuljettaminen erityistä huolellisuutta?
+            </Text>
 
-          <Flex columnGap={"16px"}>
+            <Flex columnGap={"16px"}>
+              <Button
+                variant={"secondary"}
+                minWidth={"75px"}
+                maxWidth={"max-content"}
+                height={SMALL_BUTTON_HEIGHT}
+                onClick={() => setIsCargoPrecious("IS_PRECIOUS")}
+              >
+                Kyllä
+              </Button>
+              <Button
+                variant={"secondaryInverse"}
+                minWidth={"75px"}
+                maxWidth={"max-content"}
+                height={SMALL_BUTTON_HEIGHT}
+                onClick={() => setIsCargoPrecious("NOT_PRECIOUS")}
+              >
+                Ei
+              </Button>
+            </Flex>
+          </Flex>
+        </BorderDiv>
+      );
+    }
+
+    if (isCargoPrecious === "IS_PRECIOUS") {
+      return (
+        <Box>
+          <Flex
+            maxWidth={""}
+            width={"100%"}
+            flexWrap={"wrap"}
+            columnGap={"16px"}
+            rowGap={"16px"}
+            fontSize={"19px"}
+            flexDir={"row"}
+            alignItems={"center"}
+          >
+            <GreyText>Tavallista enemmän vastuuta</GreyText>
             <Button
-              variant={"secondary"}
-              minWidth={"75px"}
-              maxWidth={"max-content"}
-              height={SMALL_BUTTON_HEIGHT}
+              padding={"4px 16px"}
+              width={"max-content"}
+              borderRadius={"10px"}
+              height={"25px"}
+              variant={"primaryInverse"}
+              onClick={() => setIsCargoPrecious("NOT_PRECIOUS")}
             >
-              Kyllä
-            </Button>
-            <Button
-              variant={"secondaryInverse"}
-              minWidth={"75px"}
-              maxWidth={"max-content"}
-              height={SMALL_BUTTON_HEIGHT}
-            >
-              Ei
+              <Text cursor={"pointer"} fontSize={"12px"}>
+                Vaihda
+              </Text>
             </Button>
           </Flex>
-        </Flex>
-      </BorderDiv>
+        </Box>
+      );
+    }
+
+    if (isCargoPrecious === "NOT_PRECIOUS") {
+      return (
+        <Box>
+          <Flex
+            maxWidth={""}
+            width={"100%"}
+            flexWrap={"wrap"}
+            columnGap={"16px"}
+            rowGap={"16px"}
+            fontSize={"19px"}
+            flexDir={"row"}
+            alignItems={"center"}
+          >
+            <GreyText>Ei ole suurta riskiä</GreyText>
+            <Button
+              padding={"4px 16px"}
+              width={"max-content"}
+              borderRadius={"10px"}
+              height={"25px"}
+              variant={"primaryInverse"}
+              onClick={() => setIsCargoPrecious("IS_PRECIOUS")}
+            >
+              <Text cursor={"pointer"} fontSize={"12px"}>
+                Vaihda
+              </Text>
+            </Button>
+          </Flex>
+        </Box>
+      );
+    }
+
+    return null;
+  };
+  return (
+    <Box id={"drivers-risk"}>
+      <Text fontSize={"19px"} fontWeight={"bold"}>
+        Kuljettajan vastuu
+      </Text>
+
+      {conditionalRendering()}
     </Box>
   );
 };
@@ -149,6 +364,7 @@ const ListingTimeSensitivity = ({
   setSelectedDate,
   dateType,
   setDateType,
+  erroredField,
 }: {
   isListingTimeSensitive: ListingTimeSensitivityQuery;
   setIsListingTimeSensitive: React.Dispatch<
@@ -156,15 +372,19 @@ const ListingTimeSensitivity = ({
   >;
   selectedDate: Date;
   setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  dateType: "RANGE" | "SINGULAR_DATE" | "AFTER_DATE";
-  setDateType: React.Dispatch<
-    React.SetStateAction<"RANGE" | "SINGULAR_DATE" | "AFTER_DATE">
-  >;
+  dateType: DateOptions;
+  setDateType: React.Dispatch<React.SetStateAction<DateOptions>>;
+  erroredField: ErroredFieldOptions;
 }) => {
-  const renderQuestion = () => {
+  const conditionalRendering = () => {
     if (isListingTimeSensitive === "NOT_ANSWERED") {
       return (
-        <BorderDiv maxW={"800px"} width={"100%"} marginTop={"5px"}>
+        <BorderDiv
+          maxW={"800px"}
+          width={"100%"}
+          marginTop={"5px"}
+          isErrored={erroredField === "listing-time-sensitivity"}
+        >
           <Flex alignItems={"center"} justifyContent={"space-between"}>
             <Text fontWeight={"500"}>
               Onko kuljetuksen ajankohdalla merkitystä?
@@ -265,6 +485,7 @@ const ListingTimeSensitivity = ({
             width={"100%"}
             flexWrap={"wrap"}
             columnGap={"16px"}
+            rowGap={"16px"}
             fontSize={"19px"}
             flexDir={"row"}
             alignItems={"center"}
@@ -293,34 +514,52 @@ const ListingTimeSensitivity = ({
     return null;
   };
   return (
-    <Box>
+    <Box id={"listing-time-sensitivity"}>
       <Text fontSize={"19px"} fontWeight={"bold"}>
         Ajankohta
       </Text>
-      {renderQuestion()}
+      {conditionalRendering()}
     </Box>
   );
 };
 
-const SubmitFooter = () => {
+const SubmitFooter = ({ submit }: { submit: () => void }) => {
   return (
-    <Flex flexDirection={"row-reverse"} width={"100%"}>
-      <Button width={"120px"}>Lähetä</Button>
+    <Flex
+      flexDirection={"row-reverse"}
+      width={"100%"}
+      justifyContent={"space-between"}
+      flexWrap={"wrap"}
+      rowGap={"16px"}
+    >
+      <Button width={"120px"} onClick={submit}>
+        Lähetä
+      </Button>
+      <Button width={"120px"} variant={"primaryInverse"}>
+        Peruuta
+      </Button>
     </Flex>
   );
 };
 
 const TargetAddress = ({
   setTargetAddress,
+  erroredField,
 }: {
   setTargetAddress: React.Dispatch<React.SetStateAction<string>>;
+  erroredField: ErroredFieldOptions;
 }) => {
   const [askForTargetAddress, setAskForTargetAddress] = useState("INIT");
 
   const getTargetAddress = () => {
     if (askForTargetAddress === "INIT") {
       return (
-        <BorderDiv maxW={"800px"} width={"100%"} marginTop={"5px"}>
+        <BorderDiv
+          maxW={"800px"}
+          width={"100%"}
+          marginTop={"5px"}
+          isErrored={erroredField === "target-address"}
+        >
           <Flex
             alignItems={"center"}
             justifyContent={"space-between"}
@@ -338,7 +577,6 @@ const TargetAddress = ({
                 maxWidth={"max-content"}
                 height={SMALL_BUTTON_HEIGHT}
                 onClick={() => {
-                  setTargetAddress("Kaatopaikka tai kierrätys");
                   setAskForTargetAddress("RECYCLING");
                 }}
               >
@@ -402,7 +640,7 @@ const TargetAddress = ({
     );
   };
   return (
-    <Box>
+    <Box id={"target-address"}>
       <Text fontSize={"19px"} fontWeight={"bold"}>
         Määränpää
       </Text>
@@ -516,7 +754,7 @@ const UserAddress = ({
     );
   };
   return (
-    <Box>
+    <Box id={"origin-address"}>
       <Box marginTop={"32px"}>
         <Text fontSize={"19px"} fontWeight={"bold"}>
           Sijanti
@@ -536,6 +774,7 @@ const CargoDetails = ({
   setTextDescription,
   estimatedWeight,
   setEstimatedWeight,
+  erroredField,
 }: {
   attachments: FileList | null;
   setAttachments: React.Dispatch<React.SetStateAction<FileList | null>>;
@@ -545,8 +784,10 @@ const CargoDetails = ({
   setTextDescription: React.Dispatch<React.SetStateAction<string>>;
   estimatedWeight: WeightCategory;
   setEstimatedWeight: React.Dispatch<React.SetStateAction<WeightCategory>>;
+  erroredField: ErroredFieldOptions;
 }) => {
-  const modalDisclosure = useDisclosure();
+  const cargoModalDisclosure = useDisclosure();
+
   const [modalInEditMode, setModalInEditMode] = useState(false);
 
   const addedAttchments = useRef<FileList | null>(attachments);
@@ -603,7 +844,7 @@ const CargoDetails = ({
     setEstimatedWeight(selectedWeightCategory.current);
     setSelectedMainAttachment(selectedMainPicture.current);
     setModalInEditMode(true);
-    modalDisclosure.onClose();
+    cargoModalDisclosure.onClose();
   };
 
   const ModalFooter = () => {
@@ -614,7 +855,7 @@ const CargoDetails = ({
             <Button
               variant={"secondaryInverse"}
               height={SMALL_BUTTON_HEIGHT}
-              onClick={modalDisclosure.onClose}
+              onClick={cargoModalDisclosure.onClose}
             >
               Peruuta
             </Button>
@@ -765,26 +1006,31 @@ const CargoDetails = ({
   };
 
   return (
-    <Box>
-      <Box marginTop={"32px"}>
-        <Flex columnGap={"32px"} rowGap={"32px"} alignItems={"center"}>
-          <Text fontSize={"19px"} fontWeight={"bold"}>
-            Tietoja kuormasta
-          </Text>
+    <Box id={"cargo-details"}>
+      <BorderDiv
+        maxW={"800px"}
+        width={"100%"}
+        marginTop={"32px"}
+        isErrored={erroredField === "cargo-details"}
+      >
+        <Flex>
+          <Flex columnGap={"32px"} rowGap={"32px"} alignItems={"center"}>
+            <Text fontSize={"19px"} fontWeight={"bold"}>
+              Tietoja kuormasta
+            </Text>
 
-          <Button
-            height={SMALL_BUTTON_HEIGHT}
-            variant={"primaryInverse"}
-            width={"85px"}
-            onClick={() => {
-              modalDisclosure.onOpen();
-            }}
-          >
-            {modalInEditMode ? "Muuta" : "Lisää"}
-          </Button>
+            <Button
+              height={SMALL_BUTTON_HEIGHT}
+              width={"85px"}
+              onClick={() => {
+                cargoModalDisclosure.onOpen();
+              }}
+            >
+              {modalInEditMode ? "Muuta" : "Lisää"}
+            </Button>
+          </Flex>
         </Flex>
-      </Box>
-
+      </BorderDiv>
       {modalInEditMode && (
         <Box marginTop={"32px"}>
           <GreyText fontSize={"19px"} fontWeight={"bold"}>
@@ -828,7 +1074,7 @@ const CargoDetails = ({
               <Button
                 height={"24px"}
                 fontSize={"14px"}
-                onClick={modalDisclosure.onOpen}
+                onClick={cargoModalDisclosure.onOpen}
               >
                 Lisää
               </Button>
@@ -838,11 +1084,12 @@ const CargoDetails = ({
       ) : null}
 
       <ModalWrapper
-        disclosure={modalDisclosure}
+        disclosure={cargoModalDisclosure}
         footerEnabled={true}
         modalTitle={"Kuorman tiedot"}
         modalContent={<ModalContent />}
         footerContent={<ModalFooter />}
+        modalWidth={"60vw"}
       />
     </Box>
   );

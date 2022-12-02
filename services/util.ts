@@ -1,6 +1,13 @@
-export const getRequest = async (endpoint: string) => {
+export const getRequest = async (
+  endpoint: string,
+  urlSearchParams?: URLSearchParams | null
+) => {
   try {
-    const res = await fetch(endpoint);
+    console.log(endpoint);
+
+    const res = await fetch(
+      endpoint + urlSearchParams ? "?" + urlSearchParams : ""
+    );
 
     return res;
   } catch (err) {

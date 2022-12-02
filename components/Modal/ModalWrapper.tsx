@@ -19,17 +19,19 @@ type Props = {
   footerContent?: string | React.ReactNode;
   footerEnabled: boolean;
   disclosure: UseDisclosureProps;
+  modalWidth: string;
 };
 
 export default function ModalWrapper(props: Props) {
-  const { footerEnabled, footerContent, modalContent, modalTitle } = props;
+  const { footerEnabled, footerContent, modalContent, modalTitle, modalWidth } =
+    props;
   const { isOpen, onClose } = props.disclosure;
   const { width } = useWindowDimensions();
   return (
     <Modal
       isOpen={isOpen as boolean}
       onClose={onClose as () => void}
-      size={width > 1000 ? "60vw" : "95%"}
+      size={width > 1000 ? modalWidth : "95%"}
     >
       <ModalOverlay />
       <ModalContent width={width > 1000 ? "60vw" : "95%"}>

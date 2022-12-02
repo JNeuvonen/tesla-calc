@@ -70,6 +70,22 @@ export const langlatToAddress = async ({
   return res;
 };
 
+export const scrollRefIntoView = (ref: any) => {
+  ref.current.scrollIntoView;
+};
+
+export const scrollIdIntoView = (id: string) => {
+  const htmlDivElement: null | HTMLElement = document.getElementById(id);
+
+  if (htmlDivElement) {
+    htmlDivElement.scrollIntoView({
+      behavior: "auto",
+      block: "center",
+      inline: "center",
+    });
+  }
+};
+
 export const destructureLngLtFromGeoloc = (pos: GeolocationPosition | null) => {
   if (!pos) {
     return {
