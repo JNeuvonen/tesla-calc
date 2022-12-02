@@ -14,9 +14,11 @@ import { GREY_100 } from "../../chakra/colors";
 import { BOX_SHADOW_100, SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
 import {
+  getDateFormatted,
   getInputFieldValById,
   weightCategoryFormatted,
 } from "../../utils/functions/general";
+import useWindowDimensions from "../../utils/hooks/windowDimensions";
 import {
   LightCargoIcon,
   LightWeightIcon,
@@ -31,8 +33,11 @@ import DividerWrapper from "../StyleWrappers/DividerWrapper";
 import GreyText from "../StyleWrappers/GreyText";
 import PageContentHeading from "../StyleWrappers/PageContentHeading";
 import FileHandler from "../Util/FileHandler";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 export type WeightCategory = "NONE" | "LIGHT" | "MEDIUM" | "HEAVY" | "HEAVY-XL";
+export type ListingTimeSensitivityQuery = "NOT_ANSWERED" | "YES" | "NO";
 
 export default function CreateListing() {
   //STATE
@@ -43,6 +48,12 @@ export default function CreateListing() {
   const [textDescription, setTextDescription] = useState("");
   const [estimatedWeight, setEstimatedWeight] =
     useState<WeightCategory>("NONE");
+  const [isListingTimeSensitive, setIsListingTimeSensitive] =
+    useState<ListingTimeSensitivityQuery>("NOT_ANSWERED");
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [dateType, setDateType] = useState<
+    "RANGE" | "SINGULAR_DATE" | "AFTER_DATE"
+  >("AFTER_DATE");
 
   //CONTEXT
   const user = useAuth();
@@ -75,7 +86,14 @@ export default function CreateListing() {
       />
       <DividerWrapper verticalMargin={"32px"} />
 
-      <ListingTimeSensitivity />
+      <ListingTimeSensitivity
+        isListingTimeSensitive={isListingTimeSensitive}
+        setIsListingTimeSensitive={setIsListingTimeSensitive}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        dateType={dateType}
+        setDateType={setDateType}
+      />
 
       <DividerWrapper verticalMargin={"32px"} />
 
@@ -124,38 +142,162 @@ const IsCargoPrecious = () => {
   );
 };
 
-const ListingTimeSensitivity = () => {
+const ListingTimeSensitivity = ({
+  isListingTimeSensitive,
+  setIsListingTimeSensitive,
+  selectedDate,
+  setSelectedDate,
+  dateType,
+  setDateType,
+}: {
+  isListingTimeSensitive: ListingTimeSensitivityQuery;
+  setIsListingTimeSensitive: React.Dispatch<
+    React.SetStateAction<ListingTimeSensitivityQuery>
+  >;
+  selectedDate: Date;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
+  dateType: "RANGE" | "SINGULAR_DATE" | "AFTER_DATE";
+  setDateType: React.Dispatch<
+    React.SetStateAction<"RANGE" | "SINGULAR_DATE" | "AFTER_DATE">
+  >;
+}) => {
+  const renderQuestion = () => {
+    if (isListingTimeSensitive === "NOT_ANSWERED") {
+      return (
+        <BorderDiv maxW={"800px"} width={"100%"} marginTop={"5px"}>
+          <Flex alignItems={"center"} justifyContent={"space-between"}>
+            <Text fontWeight={"500"}>
+              Onko kuljetuksen ajankohdalla merkitystä?
+            </Text>
+
+            <Flex columnGap={"16px"}>
+              <Button
+                variant={"secondary"}
+                minWidth={"75px"}
+                maxWidth={"max-content"}
+                height={SMALL_BUTTON_HEIGHT}
+                onClick={() => setIsListingTimeSensitive("YES")}
+              >
+                Kyllä
+              </Button>
+              <Button
+                variant={"secondaryInverse"}
+                minWidth={"75px"}
+                maxWidth={"max-content"}
+                height={SMALL_BUTTON_HEIGHT}
+                onClick={() => setIsListingTimeSensitive("NO")}
+              >
+                Ei
+              </Button>
+            </Flex>
+          </Flex>
+        </BorderDiv>
+      );
+    }
+
+    if (isListingTimeSensitive === "YES") {
+      return (
+        <Box marginTop={"16px"}>
+          <Flex columnGap={"16px"} flexWrap={"wrap"} rowGap={"16px"}>
+            <Flex columnGap={"10px"}>
+              <Checkbox
+                isChecked={dateType === "SINGULAR_DATE" ? true : false}
+                onChange={() => setDateType("SINGULAR_DATE")}
+              />
+              <GreyText>Yksittäinen ajankohta</GreyText>
+            </Flex>
+
+            <Flex columnGap={"10px"}>
+              <Checkbox
+                isChecked={dateType === "RANGE" ? true : false}
+                onChange={() => setDateType("RANGE")}
+              />
+              <GreyText>Useampi päivä</GreyText>
+            </Flex>
+
+            <Flex columnGap={"10px"}>
+              <Checkbox
+                isChecked={dateType === "AFTER_DATE" ? true : false}
+                onChange={() => setDateType("AFTER_DATE")}
+              />
+              <GreyText>Haluan kuljetuksen jonkin ajankohdan jälkeen</GreyText>
+            </Flex>
+          </Flex>
+
+          <Flex
+            marginTop={"16px"}
+            flexWrap={"wrap"}
+            columnGap={"16px"}
+            rowGap={"16px"}
+          >
+            <GreyText>{getDateFormatted(selectedDate, dateType)}</GreyText>
+            <Button
+              padding={"4px 16px"}
+              width={"max-content"}
+              borderRadius={"10px"}
+              height={"25px"}
+              variant={"primaryInverse"}
+              textTransform={"none"}
+              onClick={() => setIsListingTimeSensitive("NO")}
+            >
+              <Text cursor={"pointer"} fontSize={"12px"}>
+                Ajanhetkellä ei ole väliä
+              </Text>
+            </Button>
+          </Flex>
+
+          <Box maxWidth={"400px"} width={"100%"} marginTop={"16px"}>
+            <Calendar
+              onChange={setSelectedDate}
+              value={selectedDate}
+              selectRange={dateType === "RANGE" ? true : false}
+            />
+          </Box>
+        </Box>
+      );
+    }
+
+    if (isListingTimeSensitive === "NO") {
+      return (
+        <Box>
+          <Flex
+            maxWidth={""}
+            width={"100%"}
+            flexWrap={"wrap"}
+            columnGap={"16px"}
+            fontSize={"19px"}
+            flexDir={"row"}
+            alignItems={"center"}
+          >
+            <GreyText>
+              Kuljetus tapahtuu mahdollisimman pian, mutta ajankohdalla ei ole
+              merkitystä
+            </GreyText>
+            <Button
+              padding={"4px 16px"}
+              width={"max-content"}
+              borderRadius={"10px"}
+              height={"25px"}
+              variant={"primaryInverse"}
+              onClick={() => setIsListingTimeSensitive("YES")}
+            >
+              <Text cursor={"pointer"} fontSize={"12px"}>
+                Muuta
+              </Text>
+            </Button>
+          </Flex>
+        </Box>
+      );
+    }
+
+    return null;
+  };
   return (
     <Box>
       <Text fontSize={"19px"} fontWeight={"bold"}>
         Ajankohta
       </Text>
-      <BorderDiv maxW={"800px"} width={"100%"} marginTop={"5px"}>
-        <Flex alignItems={"center"} justifyContent={"space-between"}>
-          <Text fontWeight={"500"}>
-            Onko kuljetuksen ajankohdalla merkitystä?
-          </Text>
-
-          <Flex columnGap={"16px"}>
-            <Button
-              variant={"secondary"}
-              minWidth={"75px"}
-              maxWidth={"max-content"}
-              height={SMALL_BUTTON_HEIGHT}
-            >
-              Kyllä
-            </Button>
-            <Button
-              variant={"secondaryInverse"}
-              minWidth={"75px"}
-              maxWidth={"max-content"}
-              height={SMALL_BUTTON_HEIGHT}
-            >
-              Ei
-            </Button>
-          </Flex>
-        </Flex>
-      </BorderDiv>
+      {renderQuestion()}
     </Box>
   );
 };
@@ -540,6 +682,8 @@ const CargoDetails = ({
       addedAttchments.current = e.target.files;
       forceUpdate();
     };
+
+    const { width } = useWindowDimensions();
     return (
       <Box>
         <Box maxWidth={"500px"} width={"100%"} marginTop={"32px"}>
@@ -559,7 +703,7 @@ const CargoDetails = ({
             marginTop={"12px"}
             columnGap={"32px"}
             rowGap={"16px"}
-            flexWrap={"wrap"}
+            flexWrap={width < 1000 ? "wrap" : undefined}
           >
             <WeightCategoryBox
               title="Alle 50 kg"
