@@ -9,6 +9,7 @@ import {
   ErroredFieldOptions,
   ListingTimeSensitivityQuery,
 } from ".";
+import { RED_100 } from "../../../chakra/colors";
 
 export default function ListingTimeSensitivity({
   isListingTimeSensitive,
@@ -39,7 +40,12 @@ export default function ListingTimeSensitivity({
           isErrored={erroredField === "listing-time-sensitivity"}
         >
           <Flex alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontWeight={"500"}>
+            <Text
+              fontWeight={"500"}
+              color={
+                erroredField === "listing-time-sensitivity" ? RED_100 : "black"
+              }
+            >
               Onko kuljetuksen ajankohdalla merkitystä?
             </Text>
 
@@ -168,7 +174,11 @@ export default function ListingTimeSensitivity({
   };
   return (
     <Box id={"listing-time-sensitivity"}>
-      <Text fontSize={"19px"} fontWeight={"bold"}>
+      <Text
+        fontSize={"19px"}
+        fontWeight={"bold"}
+        color={erroredField === "listing-time-sensitivity" ? RED_100 : "black"}
+      >
         Ajankohta
       </Text>
       {conditionalRendering()}

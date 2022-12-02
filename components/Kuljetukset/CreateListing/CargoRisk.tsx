@@ -1,8 +1,9 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
+import { ErroredFieldOptions, PreciousCargo } from ".";
+import { RED_100 } from "../../../chakra/colors";
 import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
-import { ErroredFieldOptions, PreciousCargo } from ".";
 
 export default function IsCargoPrecious({
   isCargoPrecious,
@@ -23,7 +24,10 @@ export default function IsCargoPrecious({
           isErrored={erroredField === "drivers-risk"}
         >
           <Flex alignItems={"center"} justifyContent={"space-between"}>
-            <Text fontWeight={"500"}>
+            <Text
+              fontWeight={"500"}
+              color={erroredField === "drivers-risk" ? RED_100 : "black"}
+            >
               Onko tavara helposti rikkoutuvaa tai vaatiiko tavaran
               kuljettaminen erityistä huolellisuutta?
             </Text>
@@ -119,7 +123,11 @@ export default function IsCargoPrecious({
   };
   return (
     <Box id={"drivers-risk"}>
-      <Text fontSize={"19px"} fontWeight={"bold"}>
+      <Text
+        fontSize={"19px"}
+        fontWeight={"bold"}
+        color={erroredField === "drivers-risk" ? RED_100 : "black"}
+      >
         Kuljettajan vastuu
       </Text>
 

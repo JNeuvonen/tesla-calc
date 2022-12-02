@@ -5,6 +5,7 @@ import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
 import { ErroredFieldOptions } from ".";
+import { RED_100 } from "../../../chakra/colors";
 
 export default function TargetAddress({
   setTargetAddress,
@@ -105,7 +106,11 @@ export default function TargetAddress({
   };
   return (
     <Box id={"target-address"}>
-      <Text fontSize={"19px"} fontWeight={"bold"}>
+      <Text
+        fontSize={"19px"}
+        fontWeight={"bold"}
+        color={erroredField === "target-address" ? RED_100 : "black"}
+      >
         Määränpää
       </Text>
       {getTargetAddress()}
