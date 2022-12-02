@@ -23,6 +23,7 @@ export default function FileHandler(props: any) {
         onChange={handleChange}
         style={{ display: "none" }}
         multiple
+        accept="image/*"
       />
     </>
   );
