@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import { useState } from "react";
-import CreateListing from "../../components/Kuljetukset/createListing";
+import CreateListing from "../../components/Kuljetukset/CreateListing";
 import PageTabs from "../../components/PageTabs";
 import { getPathLastItem } from "../../utils/functions/general";
 

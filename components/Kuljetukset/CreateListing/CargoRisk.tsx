@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
-import { SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
-import BorderDiv from "../StyleWrappers/BorderDiv";
-import GreyText from "../StyleWrappers/GreyText";
-import { ErroredFieldOptions, PreciousCargo } from "./createListing";
+import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
+import BorderDiv from "../../StyleWrappers/BorderDiv";
+import GreyText from "../../StyleWrappers/GreyText";
+import { ErroredFieldOptions, PreciousCargo } from ".";
 
 export default function IsCargoPrecious({
   isCargoPrecious,

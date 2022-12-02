@@ -9,26 +9,26 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useRef, useState } from "react";
-import { GREY_100 } from "../../chakra/colors";
-import { BOX_SHADOW_100, SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
+import { GREY_100 } from "../../../chakra/colors";
+import { BOX_SHADOW_100, SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
 import {
   getInputFieldValById,
   weightCategoryFormatted,
-} from "../../utils/functions/general";
-import useWindowDimensions from "../../utils/hooks/windowDimensions";
+} from "../../../utils/functions/general";
+import useWindowDimensions from "../../../utils/hooks/windowDimensions";
 import {
   LightCargoIcon,
   LightWeightIcon,
   MediumCargoIcon,
   TrolleyIcon,
   WarningIcon,
-} from "../../utils/icons";
-import ModalFooterWrapper from "../Modal/ModalFooter";
-import ModalWrapper from "../Modal/ModalWrapper";
-import BorderDiv from "../StyleWrappers/BorderDiv";
-import GreyText from "../StyleWrappers/GreyText";
-import FileHandler from "../Util/FileHandler";
-import { ErroredFieldOptions, WeightCategory } from "./createListing";
+} from "../../../utils/icons";
+import ModalFooterWrapper from "../../Modal/ModalFooter";
+import ModalWrapper from "../../Modal/ModalWrapper";
+import BorderDiv from "../../StyleWrappers/BorderDiv";
+import GreyText from "../../StyleWrappers/GreyText";
+import FileHandler from "../../Util/FileHandler";
+import { ErroredFieldOptions, WeightCategory } from ".";
 
 export default function CargoDetails({
   attachments,

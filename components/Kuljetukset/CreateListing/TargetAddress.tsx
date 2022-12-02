@@ -1,10 +1,10 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
-import BorderDiv from "../StyleWrappers/BorderDiv";
-import GreyText from "../StyleWrappers/GreyText";
-import { ErroredFieldOptions } from "./createListing";
+import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
+import BorderDiv from "../../StyleWrappers/BorderDiv";
+import GreyText from "../../StyleWrappers/GreyText";
+import { ErroredFieldOptions } from ".";
 
 export default function TargetAddress({
   setTargetAddress,
