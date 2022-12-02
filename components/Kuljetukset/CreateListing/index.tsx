@@ -28,6 +28,7 @@ export type PreciousCargo = "NOT_ANSWERED" | "IS_PRECIOUS" | "NOT_PRECIOUS";
 export type DateOptions = "RANGE" | "AFTER_DATE" | "SINGULAR_DATE";
 export type ErroredFieldOptions =
   | "NONE"
+  | "origin-address"
   | "target-address"
   | "cargo-details"
   | "drivers-risk"
@@ -41,6 +42,7 @@ export type DriveDetails = {
 export default function CreateListing() {
   //STATE
   const submitModalDisclosure = useDisclosure();
+  const [suggestedOriginAddress, setSuggestedOriginAddress] = useState("");
   const [originAddress, setOriginAddress] = useState("");
   const [targetAddress, setTargetAddress] = useState("");
   const [attachments, setAttachments] = useState<null | FileList>(null);
@@ -71,7 +73,7 @@ export default function CreateListing() {
 
   useEffect(() => {
     if (user) {
-      setOriginAddress(user.user?.address as string);
+      setSuggestedOriginAddress(user.user?.address as string);
     }
   }, [user]);
 
@@ -83,6 +85,7 @@ export default function CreateListing() {
       scrollIdIntoView("origin-address");
       formIsValid = false;
       formErrorToast = "Tavaran lähtösijainti puuttuu lomakkeesta";
+      setErroredField("origin-address");
     } else if (!targetAddress) {
       scrollIdIntoView("target-address");
       formIsValid = false;
@@ -108,6 +111,8 @@ export default function CreateListing() {
       formErrorToast = "Kuljettajan vastuu -kohtaan ei ole vastattu";
       scrollIdIntoView("drivers-risk");
       setErroredField("drivers-risk");
+    } else {
+      setErroredField("NONE");
     }
 
     if (formIsValid) {
@@ -124,8 +129,6 @@ export default function CreateListing() {
         isCargoPrecious,
       };
       submitModalDisclosure.onOpen();
-
-      console.log(getAddressFromOrigin(originAddress));
 
       const urlSearchParams = new URLSearchParams({
         origin: getAddressFromOrigin(originAddress),
@@ -157,6 +160,8 @@ export default function CreateListing() {
       <UserAddress
         address={originAddress}
         setOriginAddress={setOriginAddress}
+        suggestedOriginAddress={suggestedOriginAddress}
+        erroredField={erroredField}
       />
       <DividerWrapper verticalMargin={"32px"} />
       <TargetAddress
