@@ -17,8 +17,6 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { GREY_100 } from "../../chakra/colors";
 import { BOX_SHADOW_100, SMALL_BUTTON_HEIGHT } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
-import { getDirectionsEndpoint } from "../../services/google/endpoints";
-import { getRequest } from "../../services/util";
 import {
   getDateFormatted,
   getInputFieldValById,
@@ -69,7 +67,7 @@ export default function CreateListing() {
   const [dateType, setDateType] = useState<DateOptions>("AFTER_DATE");
   const [isCargoPrecious, setIsCargoPrecious] =
     useState<PreciousCargo>("NOT_ANSWERED");
-  const [distanceOfDrive, setDistanceOfDrive] = useState(null);
+  const [_distanceOfDrive, _setDistanceOfDrive] = useState(null);
 
   const [erroredField, setErroredField] = useState<ErroredFieldOptions>("NONE");
 
@@ -120,34 +118,33 @@ export default function CreateListing() {
       setErroredField("drivers-risk");
     }
 
-    const payload = {
-      originAddress,
-      targetAddress,
-      attachments,
-      selectedMainAttachmentIndex: selectedMainAttachment,
-      textDescription,
-      estimatedWeight,
-      isListingTimeSensitive,
-      selectedDate,
-      dateType,
-      isCargoPrecious,
-    };
+    //const _payload = {
+    //  originAddress,
+    //  targetAddress,
+    //  attachments,
+    //  selectedMainAttachmentIndex: selectedMainAttachment,
+    //  textDescription,
+    //  estimatedWeight,
+    //  isListingTimeSensitive,
+    //  selectedDate,
+    //  dateType,
+    //  isCargoPrecious,
+    //};
 
     if (formIsValid) {
       submitModalDisclosure.onOpen();
 
-      const urlSearchParams = new URLSearchParams({
-        origin: originAddress,
-        //@ts-ignore
-        target: targetAddress.label,
-      });
+      //const urlSearchParams = new URLSearchParams({
+      //  origin: originAddress,
+      //  //@ts-ignore
+      //  target: targetAddress.label,
+      //});
 
-      const endpoint =
-        process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
+      //const endpoint =
+      process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
 
-      const res = await fetch(endpoint + urlSearchParams);
-      const parsedRes = await res.json();
-      console.log(parsedRes);
+      //const res = await fetch(endpoint + urlSearchParams);
+      //const _parsedRes = await res.json();
     } else {
       toast(customErrorToast(formErrorToast) as UseToastOptions);
     }

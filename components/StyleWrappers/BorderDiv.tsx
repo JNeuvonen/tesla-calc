@@ -1,6 +1,6 @@
 import { Box, ChakraProps } from "@chakra-ui/react";
 import React from "react";
-import { GREY_100, GREY_200, RED_100 } from "../../chakra/colors";
+import { GREY_200, RED_100 } from "../../chakra/colors";
 import { BOX_SHADOW_100 } from "../../chakra/constants";
 
 type Props = {
