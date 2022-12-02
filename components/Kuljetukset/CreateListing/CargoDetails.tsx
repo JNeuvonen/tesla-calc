@@ -163,7 +163,7 @@ export default function CargoDetails({
         </Flex>
         {arr.map((item, i) => {
           return (
-            <Flex columnGap={"16px"} marginTop={"10px"}>
+            <Flex columnGap={"16px"} marginTop={"10px"} key={i}>
               <Checkbox
                 isChecked={
                   insideModal
