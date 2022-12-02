@@ -79,7 +79,7 @@ export default function CreateListing() {
 
       <DividerWrapper verticalMargin={"32px"} />
 
-      <PreciousCargoDetails />
+      <IsCargoPrecious />
 
       <DividerWrapper verticalMargin={"32px"} />
 
@@ -88,7 +88,7 @@ export default function CreateListing() {
   );
 }
 
-const PreciousCargoDetails = () => {
+const IsCargoPrecious = () => {
   return (
     <Box>
       <Text fontSize={"19px"} fontWeight={"bold"}>
@@ -555,7 +555,12 @@ const CargoDetails = ({
         <Box marginTop={"32px"}>
           <GreyText>Arvioi paino</GreyText>
 
-          <Flex marginTop={"12px"} columnGap={"32px"} rowGap={"16px"}>
+          <Flex
+            marginTop={"12px"}
+            columnGap={"32px"}
+            rowGap={"16px"}
+            flexWrap={"wrap"}
+          >
             <WeightCategoryBox
               title="Alle 50 kg"
               icon={<LightWeightIcon width="42px" height="42px" />}
@@ -583,7 +588,12 @@ const CargoDetails = ({
         </Box>
 
         <Box marginTop={"32px"}>
-          <Flex justifyContent={"space-between"} alignItems={"end"}>
+          <Flex
+            justifyContent={"space-between"}
+            alignItems={"end"}
+            flexWrap={"wrap"}
+            rowGap={"16px"}
+          >
             <GreyText>Kuvia tai videoita {attachments && <>✓</>}</GreyText>
 
             {attachments === null ? (
