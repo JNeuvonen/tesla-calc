@@ -6,9 +6,10 @@ import {
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { useAuth } from "../../../context/auth";
+import { GoogleDirectionApiRes } from "../../../types/responses/google-direction";
 import { scrollIdIntoView } from "../../../utils/functions/general";
 import { customErrorToast } from "../../../utils/toasts";
 import ModalWrapper from "../../Modal/ModalWrapper";
@@ -17,7 +18,7 @@ import PageContentHeading from "../../StyleWrappers/PageContentHeading";
 import CargoDetails from "./CargoDetails";
 import IsCargoPrecious from "./CargoRisk";
 import ListingTimeSensitivity from "./ListingTimeSensitivity";
-import SubmitModalContent from "./SubmitModalContent";
+import SubmitModalContent, { getAddressFromOrigin } from "./SubmitModalContent";
 import TargetAddress from "./TargetAddress";
 import UserAddress from "./UserAddress";
 
@@ -31,6 +32,11 @@ export type ErroredFieldOptions =
   | "cargo-details"
   | "drivers-risk"
   | "listing-time-sensitivity";
+
+export type DriveDetails = {
+  distance: string;
+  duration: string;
+};
 
 export default function CreateListing() {
   //STATE
@@ -48,9 +54,14 @@ export default function CreateListing() {
   const [dateType, setDateType] = useState<DateOptions>("AFTER_DATE");
   const [isCargoPrecious, setIsCargoPrecious] =
     useState<PreciousCargo>("NOT_ANSWERED");
-  const [_distanceOfDrive, _setDistanceOfDrive] = useState(null);
-
+  const [driveDetails, setDriveDetails] = useState({} as DriveDetails);
   const [erroredField, setErroredField] = useState<ErroredFieldOptions>("NONE");
+
+  const [, updateState] = useState(0);
+  const forceUpdate = React.useCallback(
+    () => updateState(Math.random() * Number.MAX_SAFE_INTEGER),
+    []
+  );
 
   //CONTEXT
   const user = useAuth();
@@ -99,33 +110,42 @@ export default function CreateListing() {
       setErroredField("drivers-risk");
     }
 
-    //const _payload = {
-    //  originAddress,
-    //  targetAddress,
-    //  attachments,
-    //  selectedMainAttachmentIndex: selectedMainAttachment,
-    //  textDescription,
-    //  estimatedWeight,
-    //  isListingTimeSensitive,
-    //  selectedDate,
-    //  dateType,
-    //  isCargoPrecious,
-    //};
-
     if (formIsValid) {
+      const _payload = {
+        originAddress,
+        targetAddress,
+        attachments,
+        selectedMainAttachmentIndex: selectedMainAttachment,
+        textDescription,
+        estimatedWeight,
+        isListingTimeSensitive,
+        selectedDate,
+        dateType,
+        isCargoPrecious,
+      };
       submitModalDisclosure.onOpen();
 
-      //const urlSearchParams = new URLSearchParams({
-      //  origin: originAddress,
-      //  //@ts-ignore
-      //  target: targetAddress.label,
-      //});
+      console.log(getAddressFromOrigin(originAddress));
 
-      //const endpoint =
-      process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
+      const urlSearchParams = new URLSearchParams({
+        origin: getAddressFromOrigin(originAddress),
+        //@ts-ignore
+        target: targetAddress.label,
+      });
+      const endpoint =
+        process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
 
-      //const res = await fetch(endpoint + urlSearchParams);
-      //const _parsedRes = await res.json();
+      const res = await fetch(endpoint + urlSearchParams);
+
+      const parsedRes: GoogleDirectionApiRes = await res.json();
+
+      const distance = parsedRes.data.routes[0].legs[0].distance.text;
+      const duration = parsedRes.data.routes[0].legs[0].duration.text;
+
+      setDriveDetails({ distance, duration });
+      console.log(distance, duration);
+
+      forceUpdate();
     } else {
       toast(customErrorToast(formErrorToast) as UseToastOptions);
     }
@@ -182,8 +202,14 @@ export default function CreateListing() {
       <ModalWrapper
         disclosure={submitModalDisclosure}
         footerEnabled={false}
-        modalTitle={"Tarkista tiedot"}
-        modalContent={<SubmitModalContent />}
+        modalTitle={"Tiedot"}
+        modalContent={
+          <SubmitModalContent
+            driveDetails={driveDetails}
+            origin={originAddress}
+            target={targetAddress}
+          />
+        }
         modalWidth={"sm"}
       />
     </Box>

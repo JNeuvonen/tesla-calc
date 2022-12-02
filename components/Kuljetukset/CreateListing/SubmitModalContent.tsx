@@ -1,12 +1,29 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { DriveDetails } from ".";
 import GreyText from "../../StyleWrappers/GreyText";
 
-export default function SubmitModalContent() {
+type Props = {
+  driveDetails: DriveDetails;
+  origin: any;
+  target: any;
+};
+
+export default function SubmitModalContent({
+  driveDetails,
+  origin,
+  target,
+}: Props) {
   return (
     <Box paddingBottom={"30px"}>
-      <GreyText>
-        Haluatko vielä varmistaa ovatko antamasi tiedot oikein?
-      </GreyText>
+      <Box marginTop={"16px"}>
+        <Flex flexDir={"column"} rowGap={"10px"}>
+          <GreyText>Pituus: {driveDetails.distance}</GreyText>
+          <GreyText>Arvioitu kesto: {driveDetails.duration}</GreyText>
+
+          <GreyText>Aloitussijainti: {getAddressFromOrigin(origin)}</GreyText>
+          <GreyText>Määränpää: {target.label}</GreyText>
+        </Flex>
+      </Box>
 
       <Flex
         width={"100%"}
@@ -15,16 +32,24 @@ export default function SubmitModalContent() {
         marginTop={"16px"}
       >
         <Button width={"100%"} textTransform={"initial"}>
-          En, lomake on valmis
+          Lähetä
         </Button>
         <Button
           width={"100%"}
           variant={"primaryInverse"}
           textTransform={"initial"}
         >
-          Palaa lomaakkeeseen
+          Takaisin
         </Button>
       </Flex>
     </Box>
   );
 }
+
+export const getAddressFromOrigin = (origin: any) => {
+  if (typeof origin === "string") {
+    return origin;
+  }
+
+  return origin?.label;
+};
