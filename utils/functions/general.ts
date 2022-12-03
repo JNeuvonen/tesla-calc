@@ -1,4 +1,4 @@
-import { WeightCategory } from "../../components/Kuljetukset/CreateListing";
+import { WeightCategory } from "../../components/Kuljetukset/CreateListing/types";
 import { getRequest } from "../../services/util";
 
 export const getInputFieldValById = (id: string, useDefaultvalue = false) => {

@@ -16,13 +16,13 @@ export default function BorderDiv(
       HTMLDivElement
     >
 ) {
-  const { children, isErrored } = props;
+  const { children, isErrored, ...restOfProps } = props;
 
   const redBorderActive = isErrored === undefined ? false : isErrored;
   return (
     <Box
       border={`1px solid ${redBorderActive ? RED_100 : GREY_200}`}
-      {...props}
+      {...restOfProps}
       borderRadius={"10px"}
       padding={"16px"}
       _hover={{

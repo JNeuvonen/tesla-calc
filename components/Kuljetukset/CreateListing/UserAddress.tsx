@@ -1,16 +1,22 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { RED_100 } from "../../../chakra/colors";
 import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
+import { ErroredFieldOptions } from "./types";
 
 export default function UserAddress({
   address,
   setOriginAddress,
+  suggestedOriginAddress,
+  erroredField,
 }: {
   address: string;
   setOriginAddress: React.Dispatch<React.SetStateAction<string>>;
+  suggestedOriginAddress: string;
+  erroredField: ErroredFieldOptions;
 }) {
   const [askIfAddressIsCorrect, setAskIfAddressIsCorrect] = useState(false);
   const [isAddressCorrect, setIsAddressCorrect] = useState(false);
@@ -77,7 +83,9 @@ export default function UserAddress({
             rowGap={"32px"}
             flexWrap={"wrap"}
           >
-            <Text fontWeight={"500"}>Onko {address} lähtösijainti?</Text>
+            <Text fontWeight={"500"}>
+              Onko {suggestedOriginAddress} lähtösijainti?
+            </Text>
             <Flex columnGap={"16px"}>
               <Button
                 variant={"secondary"}
@@ -87,6 +95,7 @@ export default function UserAddress({
                 onClick={() => {
                   setAskIfAddressIsCorrect(true);
                   setIsAddressCorrect(true);
+                  setOriginAddress(suggestedOriginAddress);
                 }}
               >
                 Kyllä
@@ -112,7 +121,11 @@ export default function UserAddress({
   return (
     <Box id={"origin-address"}>
       <Box marginTop={"32px"}>
-        <Text fontSize={"19px"} fontWeight={"bold"}>
+        <Text
+          fontSize={"19px"}
+          fontWeight={"bold"}
+          color={erroredField === "origin-address" ? RED_100 : "black"}
+        >
           Sijanti
         </Text>
         {getAddressInputField()}

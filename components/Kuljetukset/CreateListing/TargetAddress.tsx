@@ -1,10 +1,11 @@
 import { Box, Button, Flex, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import { ErroredFieldOptions } from "./types";
+import { RED_100 } from "../../../chakra/colors";
 import { SMALL_BUTTON_HEIGHT } from "../../../chakra/constants";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
-import { ErroredFieldOptions } from ".";
 
 export default function TargetAddress({
   setTargetAddress,
@@ -105,7 +106,11 @@ export default function TargetAddress({
   };
   return (
     <Box id={"target-address"}>
-      <Text fontSize={"19px"} fontWeight={"bold"}>
+      <Text
+        fontSize={"19px"}
+        fontWeight={"bold"}
+        color={erroredField === "target-address" ? RED_100 : "black"}
+      >
         Määränpää
       </Text>
       {getTargetAddress()}
