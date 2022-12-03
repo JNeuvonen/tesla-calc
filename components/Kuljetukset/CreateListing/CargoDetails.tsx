@@ -22,7 +22,6 @@ import {
   LightCargoIcon,
   LightWeightIcon,
   MediumCargoIcon,
-  TrashcanIcon,
   TrolleyIcon,
   WarningIcon,
 } from "../../../utils/icons";
