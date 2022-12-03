@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react";
 import Image from "next/image";
+import LoadingSpinner from "./LoadingSpinner";
 
 type Props = {
   width?: string;
@@ -7,6 +8,9 @@ type Props = {
 };
 
 export default function ResponsiveImage({ width = "500px", src }: Props) {
+  if (!src) {
+    return <LoadingSpinner />;
+  }
   return (
     <Box
       maxWidth={width}
