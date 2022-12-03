@@ -22,6 +22,37 @@ model User {
   ForgotPasswordLink ForgotPasswordLink?
 }
 
+model Image {
+  ID        Int       @id @default(autoincrement())
+  source    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  Listing   Listing?  @relation(fields: [listingID], references: [ID])
+  listingID Int?
+}
+
+model Listing {
+  ID        Int       @id @default(autoincrement())
+  UUID      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  originAddress          String
+  targetAddress          String
+  textDescription        String
+  estimatedWeight        String
+  listingTimeSensitivity String
+  //date type can be range or invidual date
+  dateType               String
+  dateStart              DateTime
+  dateEnd                DateTime?
+  driversRisk            String
+  distance               String
+  duration               String
+  mainImage              String
+  Image                  Image[]
+}
+
 model ForgotPasswordLink {
   ID        Int       @id @default(autoincrement())
   UUID      String    @unique
