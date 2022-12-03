@@ -8,7 +8,7 @@ import {
   DateOptions,
   ErroredFieldOptions,
   ListingTimeSensitivityQuery,
-} from ".";
+} from "./types";
 import { RED_100 } from "../../../chakra/colors";
 
 export default function ListingTimeSensitivity({

@@ -28,7 +28,7 @@ import ModalWrapper from "../../Modal/ModalWrapper";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
 import FileHandler from "../../Util/FileHandler";
-import { ErroredFieldOptions, WeightCategory } from ".";
+import { ErroredFieldOptions, WeightCategory } from "./types";
 
 export default function CargoDetails({
   attachments,
