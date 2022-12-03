@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     "prisma/seed/del-all.js",
-    "pages/api/createTokenRequest.js"
+    "pages/api/createTokenRequest.js",
+    "pages/api/aws/upload-file.js"
   ],
   "exclude": ["node_modules"]
 }
