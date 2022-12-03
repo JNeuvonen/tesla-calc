@@ -39,7 +39,7 @@ export default function CreateListing() {
   const [suggestedOriginAddress, setSuggestedOriginAddress] = useState("");
   const [originAddress, setOriginAddress] = useState("");
   const [targetAddress, setTargetAddress] = useState("");
-  const [attachments, setAttachments] = useState<null | FileList>(null);
+  const [attachments, setAttachments] = useState<null | File[]>(null);
   const [selectedMainAttachment, setSelectedMainAttachment] = useState(0);
   const [textDescription, setTextDescription] = useState("");
   const [estimatedWeight, setEstimatedWeight] =

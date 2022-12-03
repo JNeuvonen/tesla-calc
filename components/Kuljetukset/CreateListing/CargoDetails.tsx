@@ -3,6 +3,8 @@ import {
   Button,
   Checkbox,
   Flex,
+  Grid,
+  GridItem,
   Text,
   Textarea,
   Tooltip,
@@ -20,11 +22,13 @@ import {
   LightCargoIcon,
   LightWeightIcon,
   MediumCargoIcon,
+  TrashcanIcon,
   TrolleyIcon,
   WarningIcon,
 } from "../../../utils/icons";
 import ModalFooterWrapper from "../../Modal/ModalFooter";
 import ModalWrapper from "../../Modal/ModalWrapper";
+import BlueText from "../../StyleWrappers/BlueText";
 import BorderDiv from "../../StyleWrappers/BorderDiv";
 import GreyText from "../../StyleWrappers/GreyText";
 import FileHandler from "../../Util/FileHandler";
@@ -41,8 +45,8 @@ export default function CargoDetails({
   setEstimatedWeight,
   erroredField,
 }: {
-  attachments: FileList | null;
-  setAttachments: React.Dispatch<React.SetStateAction<FileList | null>>;
+  attachments: File[] | null;
+  setAttachments: React.Dispatch<React.SetStateAction<File[] | null>>;
   setSelectedMainAttachment: React.Dispatch<React.SetStateAction<number>>;
   selectedMainAttachment: number;
   textDescription: string;
@@ -55,7 +59,7 @@ export default function CargoDetails({
 
   const [modalInEditMode, setModalInEditMode] = useState(false);
 
-  const addedAttchments = useRef<FileList | null>(attachments);
+  const addedAttchments = useRef<File[] | null>(null);
   const selectedWeightCategory = useRef<WeightCategory>(estimatedWeight);
   const selectedMainPicture = useRef(selectedMainAttachment);
   const freeDescription = useRef(textDescription);
@@ -139,6 +143,29 @@ export default function CargoDetails({
     );
   };
 
+  const deleteAttachment = (
+    fileList: File[],
+    filteredIndex: number,
+    insideModal: boolean
+  ) => {
+    const clone = fileList.concat().filter((_item, i) => i !== filteredIndex);
+
+    if (insideModal) {
+      addedAttchments.current = clone;
+      if (filteredIndex < selectedMainPicture.current) {
+        selectedMainPicture.current -= 1;
+      }
+      forceUpdate();
+    } else {
+      addedAttchments.current = clone;
+
+      if (filteredIndex < selectedMainAttachment) {
+        setSelectedMainAttachment(selectedMainAttachment - 1);
+      }
+      setAttachments(clone);
+    }
+  };
+
   const renderFileList = (insideModal: boolean) => {
     const arr = Array.from(
       (insideModal ? addedAttchments.current : attachments) || []
@@ -161,32 +188,87 @@ export default function CargoDetails({
             </span>
           </Tooltip>
         </Flex>
-        {arr.map((item, i) => {
-          return (
-            <Flex columnGap={"16px"} marginTop={"10px"} key={i}>
-              <Checkbox
-                isChecked={
-                  insideModal
-                    ? i === selectedMainPicture.current
-                    : i === selectedMainAttachment
-                }
-                onChange={() => {
-                  selectedMainPicture.current = i;
-                  forceUpdate();
-                }}
-              />
-              {item.name}
-            </Flex>
-          );
-        })}
+
+        <Grid templateColumns={"1 fr 1fr"}>
+          {arr.map((item, i) => {
+            return (
+              <GridItem>
+                <Flex
+                  columnGap={"16px"}
+                  marginTop={"10px"}
+                  key={item.name + i}
+                  alignItems={"center"}
+                >
+                  <Checkbox
+                    isChecked={
+                      insideModal
+                        ? i === selectedMainPicture.current
+                        : i === selectedMainAttachment
+                    }
+                    onChange={() => {
+                      if (insideModal) {
+                        selectedMainPicture.current = i;
+                        forceUpdate();
+                      } else {
+                        setSelectedMainAttachment(i);
+                      }
+                    }}
+                  />
+
+                  <Box>{item.name}</Box>
+
+                  <Button
+                    height={"20px"}
+                    variant={"secondaryInverse"}
+                    fontSize={"11px"}
+                    onClick={() => {
+                      if (insideModal) {
+                        deleteAttachment(
+                          addedAttchments.current as File[],
+                          i,
+                          insideModal
+                        );
+                      } else {
+                        deleteAttachment(attachments as File[], i, insideModal);
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </Flex>
+              </GridItem>
+            );
+          })}
+        </Grid>
       </>
     );
   };
 
   const ModalContent = () => {
     const handleFileAddFunc = (e: React.ChangeEvent<HTMLInputElement>) => {
-      addedAttchments.current = e.target.files;
-      forceUpdate();
+      if (addedAttchments.current !== null) {
+        if (e.target.files) {
+          const files = [] as File[];
+
+          for (let i = 0; i < e.target.files.length; i++) {
+            const file = e.target.files[i];
+            files.push(file);
+          }
+          addedAttchments.current = addedAttchments.current.concat(files);
+          forceUpdate();
+        }
+      } else {
+        if (e.target.files) {
+          const files = [] as File[];
+
+          for (let i = 0; i < e.target.files.length; i++) {
+            const file = e.target.files[i];
+            files.push(file);
+          }
+          addedAttchments.current = files;
+          forceUpdate();
+        }
+      }
     };
 
     const { width } = useWindowDimensions();
@@ -242,6 +324,7 @@ export default function CargoDetails({
             justifyContent={"space-between"}
             alignItems={"end"}
             flexWrap={"wrap"}
+            columnGap={"16px"}
             rowGap={"16px"}
           >
             <GreyText>Kuvia tai videoita {attachments && <>✓</>}</GreyText>
@@ -253,7 +336,7 @@ export default function CargoDetails({
                 fontWeight={"bold"}
                 marginTop={"6px"}
               >
-                * Kuvat tai videot ovat pakollinen tieto
+                * Kuvat ovat pakollinen tieto
               </GreyText>
             ) : null}
           </Flex>
@@ -323,7 +406,20 @@ export default function CargoDetails({
 
       {modalInEditMode ? (
         attachments ? (
-          <Box marginTop={"32px"}>{renderFileList(false)}</Box>
+          <Box marginTop={"32px"}>
+            {renderFileList(false)}
+
+            <Box onClick={cargoModalDisclosure.onOpen}>
+              <BlueText
+                fontWeight={"bold"}
+                textDecoration={"underline"}
+                marginTop={"6px"}
+                cursor={"pointer"}
+              >
+                Lisää kuvia
+              </BlueText>
+            </Box>
+          </Box>
         ) : (
           <Box marginTop={"32px"}>
             <Flex columnGap={"16px"} alignItems={"center"}>

@@ -85,7 +85,7 @@ export const postRequest = async ({
 };
 
 export const bulkUploadFiles = async (
-  attachments: FileList,
+  attachments: File[],
   selectedMainAttachment: number
 ) => {
   const fileLocations = [];
