@@ -6,38 +6,32 @@ import {
   useToast,
   UseToastOptions,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useRef, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import { useAuth } from "../../../context/auth";
+import { bulkUploadFiles, postRequest } from "../../../services/util";
 import { GoogleDirectionApiRes } from "../../../types/responses/google-direction";
 import { scrollIdIntoView } from "../../../utils/functions/general";
-import { customErrorToast } from "../../../utils/toasts";
+import { customErrorToast, customSuccessToast } from "../../../utils/toasts";
 import ModalWrapper from "../../Modal/ModalWrapper";
 import DividerWrapper from "../../StyleWrappers/DividerWrapper";
 import PageContentHeading from "../../StyleWrappers/PageContentHeading";
+import LoadingSpinner from "../../Util/LoadingSpinner";
 import CargoDetails from "./CargoDetails";
 import IsCargoPrecious from "./CargoRisk";
 import ListingTimeSensitivity from "./ListingTimeSensitivity";
 import SubmitModalContent, { getAddressFromOrigin } from "./SubmitModalContent";
 import TargetAddress from "./TargetAddress";
+import {
+  DateOptions,
+  DriveDetails,
+  ErroredFieldOptions,
+  ListingTimeSensitivityQuery,
+  PreciousCargo,
+  WeightCategory,
+} from "./types";
 import UserAddress from "./UserAddress";
-
-export type WeightCategory = "NONE" | "LIGHT" | "MEDIUM" | "HEAVY" | "HEAVY-XL";
-export type ListingTimeSensitivityQuery = "NOT_ANSWERED" | "YES" | "NO";
-export type PreciousCargo = "NOT_ANSWERED" | "IS_PRECIOUS" | "NOT_PRECIOUS";
-export type DateOptions = "RANGE" | "AFTER_DATE" | "SINGULAR_DATE";
-export type ErroredFieldOptions =
-  | "NONE"
-  | "origin-address"
-  | "target-address"
-  | "cargo-details"
-  | "drivers-risk"
-  | "listing-time-sensitivity";
-
-export type DriveDetails = {
-  distance: string;
-  duration: string;
-};
 
 export default function CreateListing() {
   //STATE
@@ -58,6 +52,9 @@ export default function CreateListing() {
     useState<PreciousCargo>("NOT_ANSWERED");
   const [driveDetails, setDriveDetails] = useState({} as DriveDetails);
   const [erroredField, setErroredField] = useState<ErroredFieldOptions>("NONE");
+  const [mainpictureForForm, setMainPictureForForm] = useState("");
+  const payload = useRef({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [, updateState] = useState(0);
   const forceUpdate = React.useCallback(
@@ -70,12 +67,37 @@ export default function CreateListing() {
 
   //UTIL
   const toast = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (user) {
       setSuggestedOriginAddress(user.user?.address as string);
     }
   }, [user]);
+
+  const sendData = async () => {
+    submitModalDisclosure.onClose();
+    setIsSubmitting(true);
+
+    const res = await postRequest({
+      endpoint: "listing/create",
+      payload: payload.current,
+    });
+
+    if (res && res.message === "OK") {
+      toast(customSuccessToast("Ilmoitus lähetettiin") as UseToastOptions);
+      setIsSubmitting(false);
+
+      router.replace("/kuljetukset/kiitos/" + res.listingUUID);
+    } else {
+      toast(
+        customSuccessToast(
+          "Ilmoitusta ei lähetetty onnistuneesti"
+        ) as UseToastOptions
+      );
+      setIsSubmitting(false);
+    }
+  };
 
   const submitForm = async () => {
     let formIsValid = true;
@@ -115,44 +137,56 @@ export default function CreateListing() {
       setErroredField("NONE");
     }
 
-    if (formIsValid) {
-      const _payload = {
-        originAddress,
-        targetAddress,
-        attachments,
-        selectedMainAttachmentIndex: selectedMainAttachment,
-        textDescription,
-        estimatedWeight,
-        isListingTimeSensitive,
-        selectedDate,
-        dateType,
-        isCargoPrecious,
-      };
+    if (formIsValid && attachments) {
       submitModalDisclosure.onOpen();
+
+      const { fileLocations, mainPicture } = await bulkUploadFiles(
+        attachments,
+        selectedMainAttachment
+      );
+
+      setMainPictureForForm(mainPicture);
 
       const urlSearchParams = new URLSearchParams({
         origin: getAddressFromOrigin(originAddress),
         //@ts-ignore
         target: targetAddress.label,
       });
-      const endpoint =
+      const googleEndpoint =
         process.env.NEXT_PUBLIC_BACKEND_HOST + "google/directions?";
 
-      const res = await fetch(endpoint + urlSearchParams);
+      const googleRes = await fetch(googleEndpoint + urlSearchParams);
 
-      const parsedRes: GoogleDirectionApiRes = await res.json();
+      const parsedGoogleRes: GoogleDirectionApiRes = await googleRes.json();
 
-      const distance = parsedRes.data.routes[0].legs[0].distance.text;
-      const duration = parsedRes.data.routes[0].legs[0].duration.text;
+      const distance = parsedGoogleRes.data.routes[0].legs[0].distance.text;
+      const duration = parsedGoogleRes.data.routes[0].legs[0].duration.text;
 
       setDriveDetails({ distance, duration });
-      console.log(distance, duration);
+
+      payload.current = {
+        originAddress: getAddressFromOrigin(originAddress),
+        targetAddress,
+        fileLocations,
+        mainImage: mainPicture,
+        textDescription,
+        estimatedWeight,
+        isListingTimeSensitive,
+        selectedDate,
+        dateType,
+        isCargoPrecious,
+        distance,
+        duration,
+      };
 
       forceUpdate();
     } else {
       toast(customErrorToast(formErrorToast) as UseToastOptions);
     }
   };
+  if (isSubmitting) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <Box>
@@ -213,6 +247,8 @@ export default function CreateListing() {
             driveDetails={driveDetails}
             origin={originAddress}
             target={targetAddress}
+            mainpictureForForm={mainpictureForForm}
+            sendData={sendData}
           />
         }
         modalWidth={"sm"}
