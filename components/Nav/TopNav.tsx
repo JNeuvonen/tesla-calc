@@ -1,7 +1,7 @@
 import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { SIDE_MENU_WIDTH } from "../../chakra/constants";
+import { SIDE_MENU_BP, SIDE_MENU_WIDTH } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
 import { getPathLastItem } from "../../utils/functions/general";
 import useWindowDimensions from "../../utils/hooks/windowDimensions";
@@ -33,6 +33,10 @@ const TopNav = () => {
       return header;
     }
 
+    if (path === "/") {
+      return "Etusivu";
+    }
+
     return getPathLastItem(path);
   };
 
@@ -61,7 +65,7 @@ const TopNav = () => {
         {isAuthenticated ? "Account" : "Login"}
       </Button>
 
-      {width > 1000 && (
+      {width > SIDE_MENU_BP && (
         <Heading
           fontSize={"24px"}
           marginTop={"12px"}
