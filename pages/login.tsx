@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
@@ -14,7 +13,6 @@ import useWindowDimensions from "../utils/hooks/windowDimensions";
 const Login = () => {
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
-  const router = useRouter();
   const auth = useAuth();
 
   const validateEmail = (input: string) => {
