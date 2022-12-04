@@ -81,6 +81,8 @@ export const getPageTitle = (asPath: string) => {
 
   if (asPath.includes("[tab]")) {
     title = "Roudaaja";
+  } else if (asPath.includes("kiitos")) {
+    title = "Kiitos";
   } else {
     title = asPath === "/" ? "Etusivu" : getPathLastItem(asPath);
   }

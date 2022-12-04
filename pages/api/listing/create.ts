@@ -39,6 +39,7 @@ export default async function handler(
       duration,
       fileLocations,
       mainImage,
+      userID,
     } = payload;
 
     let startDate = selectedDate;
@@ -69,6 +70,11 @@ export default async function handler(
         UUID: shortUUID,
         Image: {
           create: generateDataForImageRelation(fileLocations),
+        },
+        User: {
+          connect: {
+            ID: userID,
+          },
         },
       },
     });

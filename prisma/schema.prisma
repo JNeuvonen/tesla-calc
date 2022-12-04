@@ -20,6 +20,7 @@ model User {
   createdAt          DateTime            @default(now())
   updatedAt          DateTime?           @updatedAt
   ForgotPasswordLink ForgotPasswordLink?
+  Listing            Listing[]
 }
 
 model Image {
@@ -51,6 +52,8 @@ model Listing {
   duration               String
   mainImage              String
   Image                  Image[]
+  User                   User?     @relation(fields: [userID], references: [ID])
+  userID                 Int?
 }
 
 model ForgotPasswordLink {

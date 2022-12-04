@@ -49,8 +49,8 @@ export const initStateDriver = [
         height={sideMenuIconSize}
       />
     ),
-    href: "/kuljetukset",
-    link: "kuljetukset",
+    href: "/kartta",
+    link: "Kartta",
   },
   {
     icon: (fill?: string) => (
@@ -61,7 +61,7 @@ export const initStateDriver = [
       />
     ),
     href: "/test",
-    link: "test",
+    link: "Chat",
   },
 
   {
@@ -73,6 +73,6 @@ export const initStateDriver = [
       />
     ),
     href: "/build",
-    link: "build",
+    link: "Tuki",
   },
 ] as sidemenuItem[];
