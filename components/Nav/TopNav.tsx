@@ -2,6 +2,7 @@ import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { SIDE_MENU_WIDTH } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
+import { getPathLastItem } from "../../utils/functions/general";
 import useWindowDimensions from "../../utils/hooks/windowDimensions";
 const TopNav = () => {
   const router = useRouter();
@@ -37,8 +38,13 @@ const TopNav = () => {
       </Button>
 
       {width > 1000 && (
-        <Heading fontSize={"24px"} marginTop={"12px"} marginLeft={"24px"}>
-          Calculate
+        <Heading
+          fontSize={"24px"}
+          marginTop={"12px"}
+          marginLeft={"24px"}
+          textTransform={"capitalize"}
+        >
+          {getPathLastItem(router.asPath)}
         </Heading>
       )}
     </Flex>
