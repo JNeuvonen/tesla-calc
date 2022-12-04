@@ -151,6 +151,10 @@ export const getDateFormatted = (
     : `Kuljetus ${isDate.toLocaleDateString("en-FI")} jälkeen`;
 };
 
+export const getLargeRandomNumber = () => {
+  return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+};
+
 export const weightCategoryFormatted = (weightCategory: WeightCategory) => {
   if (weightCategory === "LIGHT") {
     return "Alle 50 kg";
