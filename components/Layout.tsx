@@ -77,8 +77,13 @@ export const getPageTitle = (asPath: string) => {
       </Head>
     );
   }
+  let title = "";
 
-  const title = asPath === "/" ? "Etusivu" : getPathLastItem(asPath);
+  if (asPath.includes("[tab]")) {
+    title = "Roudaaja";
+  } else {
+    title = asPath === "/" ? "Etusivu" : getPathLastItem(asPath);
+  }
 
   return (
     <Head>
