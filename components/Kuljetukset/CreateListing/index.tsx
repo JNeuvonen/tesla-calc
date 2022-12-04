@@ -138,11 +138,10 @@ export default function CreateListing() {
     }
 
     if (formIsValid && attachments) {
-      submitModalDisclosure.onOpen();
-
       const { fileLocations, mainPicture } = await bulkUploadFiles(
         attachments,
-        selectedMainAttachment
+        selectedMainAttachment,
+        user.user?.UUID as string
       );
 
       setMainPictureForForm(mainPicture);
@@ -159,8 +158,22 @@ export default function CreateListing() {
 
       const parsedGoogleRes: GoogleDirectionApiRes = await googleRes.json();
 
-      const distance = parsedGoogleRes.data.routes[0].legs[0].distance.text;
-      const duration = parsedGoogleRes.data.routes[0].legs[0].duration.text;
+      let distance = "";
+      let duration = "";
+      try {
+        distance = parsedGoogleRes.data.routes[0].legs[0].distance.text;
+        duration = parsedGoogleRes.data.routes[0].legs[0].duration.text;
+      } catch (_err) {
+        //COUNTER TROLL CLIENT IF TRIES CROSS CONTINENTAL DRIVE
+        toast(
+          customErrorToast(
+            "Moikka QA testaaja. Meidän pitää vielä laajentaa ennen kuin voimme tukea mantereenvälisiä kuljetuksia."
+          ) as UseToastOptions
+        );
+        return;
+      }
+
+      submitModalDisclosure.onOpen();
 
       setDriveDetails({ distance, duration });
 
@@ -177,6 +190,7 @@ export default function CreateListing() {
         isCargoPrecious,
         distance,
         duration,
+        userID: user.user?.ID as number,
       };
 
       forceUpdate();

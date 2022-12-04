@@ -23,6 +23,7 @@ export interface CreateListingSubmitForm {
   isCargoPrecious: string;
   distance: string;
   duration: string;
+  userID: number;
 }
 
 export type DriveDetails = {

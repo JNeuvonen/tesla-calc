@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getLargeRandomNumber } from "../utils/functions/general";
 
 export const getRequest = async (
   endpoint: string,
@@ -86,13 +87,18 @@ export const postRequest = async ({
 
 export const bulkUploadFiles = async (
   attachments: File[],
-  selectedMainAttachment: number
+  selectedMainAttachment: number,
+  userUUID: string
 ) => {
   const fileLocations = [];
   let mainPicture = "";
   for (let i = 0; i < attachments.length; i++) {
     const formData = new FormData();
-    formData.append("file", attachments[i], attachments[i].name);
+    formData.append(
+      "file",
+      attachments[i],
+      userUUID.split("-")[0] + "-" + getLargeRandomNumber()
+    );
     const res = await axios.post(
       (process.env.NEXT_PUBLIC_BACKEND_HOST as string) + "aws/upload-file",
       formData

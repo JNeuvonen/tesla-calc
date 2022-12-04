@@ -1,5 +1,6 @@
 import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { SIDE_MENU_WIDTH } from "../../chakra/constants";
 import { useAuth } from "../../context/auth";
 import { getPathLastItem } from "../../utils/functions/general";
@@ -10,6 +11,29 @@ const TopNav = () => {
   const isAuthenticated = useAuth().isAuthenticated();
   const onClickFunc = () => {
     router.push(isAuthenticated ? "/premium" : "/login");
+  };
+  const [nonNormalPaths] = useState(["kiitos"]);
+
+  const getHeader = () => {
+    const path = router.asPath;
+
+    if (path === undefined) {
+      return "Roudaaja";
+    }
+
+    let header = "";
+
+    nonNormalPaths.forEach((item) => {
+      if (path.includes(item)) {
+        header = item;
+      }
+    });
+
+    if (header) {
+      return header;
+    }
+
+    return getPathLastItem(path);
   };
 
   return (
@@ -44,7 +68,7 @@ const TopNav = () => {
           marginLeft={"24px"}
           textTransform={"capitalize"}
         >
-          {getPathLastItem(router.asPath)}
+          {getHeader()}
         </Heading>
       )}
     </Flex>
