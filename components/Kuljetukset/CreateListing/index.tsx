@@ -13,11 +13,7 @@ import { useAuth } from "../../../context/auth";
 import { bulkUploadFiles, postRequest } from "../../../services/util";
 import { GoogleDirectionApiRes } from "../../../types/responses/google-direction";
 import { scrollIdIntoView } from "../../../utils/functions/general";
-import {
-  customErrorToast,
-  customSuccessToast,
-  errorToast,
-} from "../../../utils/toasts";
+import { customErrorToast, customSuccessToast } from "../../../utils/toasts";
 import ModalWrapper from "../../Modal/ModalWrapper";
 import DividerWrapper from "../../StyleWrappers/DividerWrapper";
 import PageContentHeading from "../../StyleWrappers/PageContentHeading";

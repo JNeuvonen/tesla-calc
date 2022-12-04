@@ -1,4 +1,4 @@
-import { Button, Flex, Heading, useStatStyles } from "@chakra-ui/react";
+import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SIDE_MENU_WIDTH } from "../../chakra/constants";
