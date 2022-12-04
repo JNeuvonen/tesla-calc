@@ -191,7 +191,7 @@ export default function CargoDetails({
         <Grid templateColumns={"1 fr 1fr"}>
           {arr.map((item, i) => {
             return (
-              <GridItem>
+              <GridItem key={i}>
                 <Flex
                   columnGap={"16px"}
                   marginTop={"10px"}
