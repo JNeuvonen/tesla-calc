@@ -91,7 +91,7 @@ export default function CreateListing() {
       router.replace("/kuljetukset/kiitos/" + res.listingUUID);
     } else {
       toast(
-        customSuccessToast(
+        customErrorToast(
           "Ilmoitusta ei lähetetty onnistuneesti"
         ) as UseToastOptions
       );
