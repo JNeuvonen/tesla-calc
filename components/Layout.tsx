@@ -3,7 +3,10 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useAuth } from "../context/auth";
-import { stringCapitalizeFirst } from "../utils/functions/general";
+import {
+  getPathLastItem,
+  stringCapitalizeFirst,
+} from "../utils/functions/general";
 import ContentContainer from "./ContentContainer";
 import SideMenu from "./Nav/Sidemenu/SideMenu";
 import TopNav from "./Nav/TopNav";
@@ -20,6 +23,8 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     "recover-password",
     "get-recovery-link",
   ]);
+  const auth = useAuth();
+  const [allowedPaths] = useState(["/", "/login", "/signup"]);
 
   const isStandardLayoutPath = () => {
     const filteredPaths = nonNormalPaths.filter((item) => path.includes(item));
@@ -29,15 +34,28 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   if (!initAuthFetchDone || authIsFetching) {
     return (
       <>
-        {getPageTitle()}
+        {getPageTitle(router.asPath)}
         <LoadingSpinner />
+      </>
+    );
+  }
+
+  if (initAuthFetchDone && !auth.user) {
+    if (!allowedPaths.includes(path)) {
+      router.push("/");
+    }
+    return (
+      <>
+        {getPageTitle(router.asPath)}
+
+        <Box>{children}</Box>
       </>
     );
   }
 
   return (
     <>
-      {getPageTitle()}
+      {getPageTitle(router.asPath)}
       {isStandardLayoutPath() ? (
         <>
           <TopNav />
@@ -51,17 +69,16 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
   );
 }
 
-export const getPageTitle = () => {
+export const getPageTitle = (asPath: string) => {
   if (typeof window === "undefined") {
     return (
       <Head>
-        <title>Loading...</title>
+        <title>Roudaaja</title>
       </Head>
     );
   }
-  const path = window.location.href;
-  const pathSplitted = path.split("/");
-  const title = pathSplitted.length === 4 ? "Tesla-calc" : pathSplitted[3];
+
+  const title = asPath === "/" ? "Etusivu" : getPathLastItem(asPath);
 
   return (
     <Head>
