@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Heading } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
@@ -20,7 +19,6 @@ const Login = () => {
   const [role, setRole] = useState("");
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
-  const router = useRouter();
   const auth = useAuth();
 
   const validateEmail = (input: string) => {
@@ -144,14 +142,6 @@ const Login = () => {
             type={"submit"}
           >
             Signup
-          </Button>
-          <Button
-            variant={"primaryInverse"}
-            width={"250px"}
-            margin={"0 auto"}
-            onClick={() => router.push("/")}
-          >
-            Jatka vieraana
           </Button>
 
           <Link href={"/login"}>
