@@ -1,23 +1,29 @@
 import { Box, Button } from "@chakra-ui/react";
 import Link from "next/link";
+import ClientLandingPage from "../components/LandingPage/Client";
+import DriverLandingPage from "../components/LandingPage/Driver";
 import { useAuth } from "../context/auth";
+
+export type Roles = "driver" | "client";
 
 export default function Home() {
   const isAuthenticated = useAuth().isAuthenticated();
+  const userRole = useAuth().user?.type;
 
   if (isAuthenticated) {
-    return <AuthenticatedLandingPage />;
+    return <AuthenticatedLandingPage userRole={userRole as Roles} />;
   }
 
   return <UnauthenticatedLandingPage />;
 }
 
-const AuthenticatedLandingPage = () => {
+type AuthenticatedProps = {
+  userRole: Roles;
+};
+const AuthenticatedLandingPage = ({ userRole }: AuthenticatedProps) => {
   return (
     <Box>
-      <Box>Welcome</Box>
-
-      <Box>Authenticated landing page TODO</Box>
+      {userRole === "driver" ? <DriverLandingPage /> : <ClientLandingPage />}
     </Box>
   );
 };
