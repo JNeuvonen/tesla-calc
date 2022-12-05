@@ -135,7 +135,7 @@ const Login = () => {
               onClick={() => {
                 toast(
                   customErrorToast(
-                    "Currently, not supported. For demo purposes create a client account."
+                    "Currently not supported. For demo purposes create a client account."
                   ) as UseToastOptions
                 );
                 //setModeSelected("FILL-FORM");
