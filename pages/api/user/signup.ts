@@ -5,8 +5,6 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { CookieSerializeOptions } from "next/dist/server/web/spec-extension/cookies/types";
-import isEmail from "validator/lib/isEmail";
-import isStrongPassword from "validator/lib/isStrongPassword";
 import { SignupProps } from "../../../context/auth";
 import { authCookieSettings } from "../../../lib/authCookieSettings";
 import { prisma } from "../../../lib/prisma";

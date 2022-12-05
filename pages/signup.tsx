@@ -1,6 +1,6 @@
 import { Box, Button, Flex, FormLabel, Heading, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
@@ -11,11 +11,8 @@ import GreyText from "../components/StyleWrappers/GreyText";
 import TextInputLifeFeedback from "../components/TextInputLifeFeedback";
 import { useAuth } from "../context/auth";
 import { getGeocodeEndpoint } from "../services/google/endpoints";
-import { getRequest } from "../services/util";
-import { GoogleAddressRes } from "../types/responses/address";
 import { GoogleAutoCompleteRes } from "../types/responses/autocomplete-address";
 import {
-  addressComparison,
   containsAnyLetters,
   getInputFieldValById,
 } from "../utils/functions/general";
