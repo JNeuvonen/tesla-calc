@@ -7,6 +7,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { CookieSerializeOptions } from "next/dist/server/web/spec-extension/cookies/types";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
+import { SignupProps } from "../../../context/auth";
 import { authCookieSettings } from "../../../lib/authCookieSettings";
 import { prisma } from "../../../lib/prisma";
 
@@ -21,23 +22,17 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const { email, password, role, address } = req.body.payload;
+      const payload: SignupProps = req.body.payload;
 
-      const validEmail = isEmail(email);
-      const validPassword =
-        isStrongPassword(password, {
-          returnScore: true,
-        }) > 20;
-
-      if (!validEmail) {
-        res.status(400).send({ message: "Invalid email" });
-        return;
-      }
-
-      if (!validPassword) {
-        res.status(400).send({ message: "Not secure password" });
-        return;
-      }
+      const {
+        email,
+        password,
+        role,
+        address,
+        firstName,
+        lastName,
+        phoneNumber,
+      } = payload;
 
       const UUID = crypto.randomUUID();
 
@@ -49,7 +44,16 @@ export default async function handler(
           email: email,
           password: hashedPw,
           type: role,
-          address: address,
+          Address: {
+            create: {
+              address: address.address,
+              lng: address.lng,
+              lat: address.lat,
+            },
+          },
+          firstName,
+          lastName,
+          phoneNumber,
         },
       });
 
