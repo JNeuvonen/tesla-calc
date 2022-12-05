@@ -138,6 +138,8 @@ export default function CreateListing() {
     }
 
     if (formIsValid && attachments) {
+      submitModalDisclosure.onOpen();
+
       const { fileLocations, mainPicture } = await bulkUploadFiles(
         attachments,
         selectedMainAttachment,
@@ -165,6 +167,8 @@ export default function CreateListing() {
         duration = parsedGoogleRes.data.routes[0].legs[0].duration.text;
       } catch (_err) {
         //COUNTER TROLL CLIENT IF TRIES CROSS CONTINENTAL DRIVE
+        submitModalDisclosure.onClose();
+
         toast(
           customErrorToast(
             "Moikka QA testaaja. Meidän pitää vielä laajentaa ennen kuin voimme tukea mantereenvälisiä kuljetuksia."
@@ -172,8 +176,6 @@ export default function CreateListing() {
         );
         return;
       }
-
-      submitModalDisclosure.onOpen();
 
       setDriveDetails({ distance, duration });
 
