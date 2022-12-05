@@ -80,14 +80,6 @@ const Login = () => {
           >
             Submit
           </Button>
-          <Button
-            variant={"primaryInverse"}
-            width={"250px"}
-            margin={"0 auto"}
-            onClick={() => router.push("/")}
-          >
-            Continue As Guest
-          </Button>
 
           <Flex flexDir={"column"} rowGap={"16px"}>
             <Link href={"/signup"}>
