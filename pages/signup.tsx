@@ -1,13 +1,24 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Button, Flex, FormLabel, Heading, Text } from "@chakra-ui/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import isEmail from "validator/lib/isEmail";
 import isStrongPassword from "validator/lib/isStrongPassword";
 import BlueText from "../components/StyleWrappers/BlueText";
 import BorderDiv from "../components/StyleWrappers/BorderDiv";
+import DividerWrapper from "../components/StyleWrappers/DividerWrapper";
+import GreyText from "../components/StyleWrappers/GreyText";
 import TextInputLifeFeedback from "../components/TextInputLifeFeedback";
 import { useAuth } from "../context/auth";
-import { getInputFieldValById } from "../utils/functions/general";
+import { getGeocodeEndpoint } from "../services/google/endpoints";
+import { getRequest } from "../services/util";
+import { GoogleAddressRes } from "../types/responses/address";
+import { GoogleAutoCompleteRes } from "../types/responses/autocomplete-address";
+import {
+  addressComparison,
+  containsAnyLetters,
+  getInputFieldValById,
+} from "../utils/functions/general";
 import { BoxOfStuffIcon, TrolleyIcon } from "../utils/icons";
 import { ContentStyles } from "./login";
 
@@ -19,6 +30,7 @@ const Login = () => {
   const [role, setRole] = useState("");
   const [emailIsValid, setEmailIsValid] = useState(false);
   const [passwordIsValid, setPasswordIsValid] = useState(false);
+  const [address, setAddress] = useState<null | GoogleAutoCompleteRes>(null);
   const auth = useAuth();
 
   const validateEmail = (input: string) => {
@@ -36,17 +48,54 @@ const Login = () => {
   };
 
   const formIsValid = () => {
-    return emailIsValid && passwordIsValid;
+    return (
+      emailIsValid &&
+      passwordIsValid &&
+      address &&
+      validatePhoneNumber(getInputFieldValById("phone-number") as string)
+    );
+  };
+
+  const validatePhoneNumber = (input: string) => {
+    if (containsAnyLetters(input)) {
+      return false;
+    }
+
+    if (input.length < 9) {
+      return false;
+    }
+
+    return true;
   };
 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const email = getInputFieldValById("email");
     const password = getInputFieldValById("password");
-    const address = getInputFieldValById("address");
+    const firstName = getInputFieldValById("firstName");
+    const lastName = getInputFieldValById("lastName");
+    const phoneNumber = getInputFieldValById("phone-number");
+
+    const geocode = await fetch(getGeocodeEndpoint(address?.label as string));
+
+    const parsedGeocode = await geocode.json();
+    const { lat, lng } = parsedGeocode.results[0].geometry.location;
+    const addressObject = {
+      address: address?.label as string,
+      lat,
+      lng,
+    };
 
     if (email && password && address) {
-      auth.signup({ email: email.toLowerCase(), password, role, address });
+      auth.signup({
+        email: email.toLowerCase(),
+        password,
+        role,
+        firstName: firstName as string,
+        lastName: lastName as string,
+        phoneNumber: phoneNumber as string,
+        address: addressObject,
+      });
     }
   };
 
@@ -97,66 +146,144 @@ const Login = () => {
 
   return (
     <ContentStyles>
-      <Heading>Signup</Heading>
-      <form onSubmit={submit}>
-        <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
-          <TextInputLifeFeedback
-            label={"address"}
-            helpText={""}
-            type={"text"}
-            id={"address"}
-            name={"address"}
-            autocomplete={"address"}
-            validateFunction={() => {
-              return true;
-            }}
-            errorText={""}
-          ></TextInputLifeFeedback>
+      <Box paddingTop={"50px"} paddingBottom={"50px"}>
+        <Heading>Signup</Heading>
+        <form onSubmit={submit}>
+          <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
+            <Box>
+              {!address && (
+                <FormLabel
+                  textTransform={"capitalize"}
+                  display={"flex"}
+                  justifyContent={"space-between"}
+                >
+                  Osoite
+                </FormLabel>
+              )}
+              {address ? (
+                <Flex columnGap={"32px"} maxWidth={"800px"}>
+                  <Flex
+                    maxWidth={""}
+                    width={"100%"}
+                    flexWrap={"wrap"}
+                    columnGap={"16px"}
+                    fontSize={"19px"}
+                    flexDir={"row"}
+                    alignItems={"center"}
+                  >
+                    <GreyText>{address.label}</GreyText>
+                    <Button
+                      padding={"4px 16px"}
+                      width={"max-content"}
+                      borderRadius={"10px"}
+                      height={"25px"}
+                      variant={"primaryInverse"}
+                    >
+                      <Text
+                        cursor={"pointer"}
+                        fontSize={"12px"}
+                        onClick={() => setAddress(null)}
+                      >
+                        Muuta
+                      </Text>
+                    </Button>
+                  </Flex>
+                </Flex>
+              ) : (
+                <GooglePlacesAutocomplete
+                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                  selectProps={{
+                    onChange: setAddress,
+                  }}
+                />
+              )}
+            </Box>
 
-          <TextInputLifeFeedback
-            label={"email"}
-            helpText={"Valid email"}
-            type={"text"}
-            id={"email"}
-            name={"email"}
-            autocomplete={"email"}
-            validateFunction={validateEmail}
-            errorText={"Valid email is required"}
-          ></TextInputLifeFeedback>
+            <DividerWrapper verticalMargin={"0px"} />
 
-          <TextInputLifeFeedback
-            label={"Password"}
-            helpText={"Strong password"}
-            type={"password"}
-            id={"password"}
-            name={"password"}
-            autocomplete={"new-password"}
-            validateFunction={validatePassword}
-            errorText={"Strong password is required"}
-          ></TextInputLifeFeedback>
+            <GreyText>Yhteystiedot</GreyText>
+            <TextInputLifeFeedback
+              label={"Etunimi"}
+              helpText={""}
+              type={"text"}
+              id={"firstName"}
+              name={"firstName"}
+              autocomplete={"firstName"}
+              validateFunction={() => true}
+              errorText={"Vaadittu tieto"}
+            ></TextInputLifeFeedback>
 
-          <Button
-            width="250px"
-            margin={"0 auto"}
-            disabled={!formIsValid()}
-            type={"submit"}
-          >
-            Signup
-          </Button>
+            <TextInputLifeFeedback
+              label={"Sukunimi"}
+              helpText={""}
+              type={"text"}
+              id={"lastName"}
+              name={"lastName"}
+              autocomplete={"lastName"}
+              validateFunction={() => true}
+              errorText={"Vaadittu tieto"}
+            ></TextInputLifeFeedback>
 
-          <Link href={"/login"}>
-            <BlueText textDecoration={"underline"} textAlign={"center"}>
-              Already have an account?
-            </BlueText>
-          </Link>
+            <TextInputLifeFeedback
+              label={"Puhelinnumero"}
+              helpText={""}
+              type={"text"}
+              id={"phone-number"}
+              name={"lastName"}
+              autocomplete={"phone"}
+              validateFunction={validatePhoneNumber}
+              errorText={"Vaadittu tieto"}
+            ></TextInputLifeFeedback>
 
-          <Link href={"/get-recovery-link"}>
-            <BlueText textDecoration={"underline"} textAlign={"center"}>
-              Forgot password?
-            </BlueText>
-          </Link>
-        </Flex>
-      </form>
+            <DividerWrapper verticalMargin={"0px"} />
+
+            <GreyText>Tunnistautumistiedot</GreyText>
+
+            <TextInputLifeFeedback
+              label={"email"}
+              helpText={"Oikea sähköposti"}
+              type={"text"}
+              id={"email"}
+              name={"email"}
+              autocomplete={"email"}
+              validateFunction={validateEmail}
+              errorText={"Vaadittu tieto"}
+            ></TextInputLifeFeedback>
+
+            <TextInputLifeFeedback
+              label={"Password"}
+              helpText={"Vahva salasana"}
+              type={"password"}
+              id={"password"}
+              name={"password"}
+              autocomplete={"new-password"}
+              validateFunction={validatePassword}
+              errorText={"Salasanan täytyy olla vahvempi"}
+            ></TextInputLifeFeedback>
+
+            <Button
+              width="250px"
+              margin={"0 auto"}
+              disabled={!formIsValid()}
+              type={"submit"}
+            >
+              Signup
+            </Button>
+
+            <Link href={"/login"}>
+              <BlueText textDecoration={"underline"} textAlign={"center"}>
+                Already have an account?
+              </BlueText>
+            </Link>
+
+            <Link href={"/get-recovery-link"}>
+              <BlueText textDecoration={"underline"} textAlign={"center"}>
+                Forgot password?
+              </BlueText>
+            </Link>
+          </Flex>
+        </form>
+      </Box>
     </ContentStyles>
   );
 };
