@@ -221,7 +221,7 @@ const Login = () => {
               type={"text"}
               id={"firstName"}
               name={"firstName"}
-              autocomplete={"firstName"}
+              autocomplete={"given-name"}
               validateFunction={() => true}
               errorText={"Vaadittu tieto"}
             ></TextInputLifeFeedback>
@@ -232,7 +232,7 @@ const Login = () => {
               type={"text"}
               id={"lastName"}
               name={"lastName"}
-              autocomplete={"lastName"}
+              autocomplete={"family-name"}
               validateFunction={() => true}
               errorText={"Vaadittu tieto"}
             ></TextInputLifeFeedback>
