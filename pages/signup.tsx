@@ -1,4 +1,13 @@
-import { Box, Button, Flex, FormLabel, Heading, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  FormLabel,
+  Heading,
+  Text,
+  useToast,
+  UseToastOptions,
+} from "@chakra-ui/react";
 import Link from "next/link";
 import React, { useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
@@ -17,6 +26,7 @@ import {
   getInputFieldValById,
 } from "../utils/functions/general";
 import { BoxOfStuffIcon, TrolleyIcon } from "../utils/icons";
+import { customErrorToast } from "../utils/toasts";
 import { ContentStyles } from "./login";
 
 const Login = () => {
@@ -29,6 +39,7 @@ const Login = () => {
   const [passwordIsValid, setPasswordIsValid] = useState(false);
   const [address, setAddress] = useState<null | GoogleAutoCompleteRes>(null);
   const auth = useAuth();
+  const toast = useToast();
 
   const validateEmail = (input: string) => {
     const isValid = isEmail(input);
@@ -122,8 +133,13 @@ const Login = () => {
             <BorderDiv
               cursor={"pointer"}
               onClick={() => {
-                setModeSelected("FILL-FORM");
-                setRole("driver");
+                toast(
+                  customErrorToast(
+                    "Currently, not supported. For demo purposes create a client account."
+                  ) as UseToastOptions
+                );
+                //setModeSelected("FILL-FORM");
+                //setRole("driver");
               }}
             >
               <Flex flexDir={"column"} rowGap={"16px"}>
