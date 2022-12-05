@@ -55,6 +55,15 @@ export default async function handler(
         },
       });
 
+      const returnedUser = await prisma.user.findFirst({
+        where: {
+          ID: user.ID,
+        },
+        include: {
+          Address: true,
+        },
+      });
+
       if (user) {
         if (user.ID) {
           const token = jwt.sign(
@@ -75,7 +84,7 @@ export default async function handler(
             authCookieSettings as CookieSerializeOptions
           );
 
-          res.status(200).json({ user: user });
+          res.status(200).json({ user: returnedUser });
           return;
         }
       }
