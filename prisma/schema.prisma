@@ -10,17 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Address {
+  ID      Int    @id @default(autoincrement())
+  address String
+  lng     Float
+  lat     Float
+  user    User?  @relation(fields: [userID], references: [ID])
+  userID  Int?   @unique
+}
+
 model User {
   ID                 Int                 @id @default(autoincrement())
   type               String
   UUID               String              @unique
   email              String              @unique
   password           String
-  address            String
   createdAt          DateTime            @default(now())
   updatedAt          DateTime?           @updatedAt
+  phoneNumber        String
+  firstName          String
+  lastName           String
   ForgotPasswordLink ForgotPasswordLink?
   Listing            Listing[]
+  Address            Address?
 }
 
 model Image {
