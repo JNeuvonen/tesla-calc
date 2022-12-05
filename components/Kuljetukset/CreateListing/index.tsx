@@ -71,7 +71,9 @@ export default function CreateListing() {
 
   useEffect(() => {
     if (user) {
-      setSuggestedOriginAddress(user.user?.address as string);
+      //@ts-ignore
+
+      setSuggestedOriginAddress(user.user?.Address.address as string);
     }
   }, [user]);
 
