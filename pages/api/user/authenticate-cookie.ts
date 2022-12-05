@@ -22,6 +22,9 @@ export default async function handler(
           where: {
             email: email,
           },
+          include: {
+            Address: true,
+          },
         });
 
         if (user) {
