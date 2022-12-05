@@ -45,54 +45,56 @@ const Login = () => {
 
   return (
     <ContentStyles>
-      <Heading>Login</Heading>
-      <form onSubmit={login}>
-        <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
-          <TextInputLifeFeedback
-            label={"email"}
-            helpText={"Valid email"}
-            type={"text"}
-            id={"email"}
-            name={"email"}
-            autocomplete={"email"}
-            validateFunction={validateEmail}
-            errorText={"Email is required"}
-          ></TextInputLifeFeedback>
+      <Box paddingBottom={"50px"} paddingTop={"50px"}>
+        <Heading>Login</Heading>
+        <form onSubmit={login}>
+          <Flex flexDir={"column"} rowGap={"32px"} marginTop={"32px"}>
+            <TextInputLifeFeedback
+              label={"email"}
+              helpText={"Valid email"}
+              type={"text"}
+              id={"email"}
+              name={"email"}
+              autocomplete={"email"}
+              validateFunction={validateEmail}
+              errorText={"Email is required"}
+            ></TextInputLifeFeedback>
 
-          <TextInputLifeFeedback
-            label={"Password"}
-            helpText={"Strong password"}
-            type={"password"}
-            id={"password"}
-            name={"password"}
-            autocomplete={"current-password"}
-            validateFunction={validatePassword}
-            errorText={"Password is required"}
-          ></TextInputLifeFeedback>
+            <TextInputLifeFeedback
+              label={"Password"}
+              helpText={"Strong password"}
+              type={"password"}
+              id={"password"}
+              name={"password"}
+              autocomplete={"current-password"}
+              validateFunction={validatePassword}
+              errorText={"Password is required"}
+            ></TextInputLifeFeedback>
 
-          <Button
-            width="250px"
-            margin={"0 auto"}
-            disabled={!formIsValid()}
-            type="submit"
-          >
-            Login
-          </Button>
+            <Button
+              width="250px"
+              margin={"0 auto"}
+              disabled={!formIsValid()}
+              type="submit"
+            >
+              Login
+            </Button>
 
-          <Flex flexDir={"column"} rowGap={"16px"}>
-            <Link href={"/signup"}>
-              <BlueText textDecoration={"underline"} textAlign={"center"}>
-                Don't have an account?
-              </BlueText>
-            </Link>
-            <Link href={"/get-recovery-link"}>
-              <BlueText textDecoration={"underline"} textAlign={"center"}>
-                Forgot password?
-              </BlueText>
-            </Link>
+            <Flex flexDir={"column"} rowGap={"16px"}>
+              <Link href={"/signup"}>
+                <BlueText textDecoration={"underline"} textAlign={"center"}>
+                  Don't have an account?
+                </BlueText>
+              </Link>
+              <Link href={"/get-recovery-link"}>
+                <BlueText textDecoration={"underline"} textAlign={"center"}>
+                  Forgot password?
+                </BlueText>
+              </Link>
+            </Flex>
           </Flex>
-        </Flex>
-      </form>
+        </form>
+      </Box>
     </ContentStyles>
   );
 };
@@ -104,15 +106,13 @@ export default Login;
 export const ContentStyles = ({ children }: { children?: React.ReactNode }) => {
   const { width } = useWindowDimensions();
   return (
-    <Flex bgGradient={greyGradient()} width={"100%"} height={"100vh"}>
-      {width > 1000 && (
-        <Box width={"80%"} height={"100vh"} bgGradient={blueGradient()}></Box>
-      )}
+    <Flex bgGradient={greyGradient()} width={"100%"}>
+      {width > 1000 && <Box width={"80%"} bgGradient={blueGradient()}></Box>}
       <Flex
         width={width > 1000 ? "50%" : "100%"}
-        height={"100vh"}
         justifyContent={"center"}
         alignItems={"center"}
+        minHeight={"100vh"}
       >
         <Box
           minHeight={"500px"}
