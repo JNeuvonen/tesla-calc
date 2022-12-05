@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginRequest, signupRequest } from "../services/user/login";
 import { postRequest } from "../services/util";
-import { UserType } from "../types/prisma";
+import { Address, UserType } from "../types/prisma";
 import { customErrorToast, successToast } from "../utils/toasts";
 
 type authContext = {
@@ -11,17 +11,7 @@ type authContext = {
   login: ({ email, password }: { email: string; password: string }) => void;
   initialFetchDone: boolean;
   isAuthenticated: () => boolean;
-  signup: ({
-    email,
-    password,
-    role,
-    address,
-  }: {
-    email: string;
-    password: string;
-    role: string;
-    address: string;
-  }) => void;
+  signup: (props: SignupProps) => void;
   isFetching: boolean;
   position: GeolocationPosition | null;
 };
@@ -68,12 +58,10 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
     password,
     role,
     address,
-  }: {
-    email: string;
-    password: string;
-    role: string;
-    address: string;
-  }) => {
+    firstName,
+    lastName,
+    phoneNumber,
+  }: SignupProps) => {
     setIsFetching(true);
 
     const res = await signupRequest({
@@ -81,6 +69,9 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
       password: password,
       role: role,
       address: address,
+      firstName,
+      lastName,
+      phoneNumber,
     });
 
     const data = await res.json();
@@ -143,3 +134,13 @@ export const AuthProvider = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+
+export type SignupProps = {
+  email: string;
+  password: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  address: Address;
+};

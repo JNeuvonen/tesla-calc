@@ -173,3 +173,6 @@ export const weightCategoryFormatted = (weightCategory: WeightCategory) => {
 
   return "";
 };
+export function containsAnyLetters(str: string) {
+  return /[a-zA-Z]/.test(str);
+}

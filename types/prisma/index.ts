@@ -8,3 +8,9 @@ export type UserType = {
   createdAt: Date;
   updatedAt: Date | null;
 };
+
+export type Address = {
+  address: string;
+  lat: any;
+  lng: any;
+};

@@ -6,7 +6,6 @@ import {
   UseToastOptions,
 } from "@chakra-ui/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import isEmail from "validator/lib/isEmail";
 import BlueText from "../components/StyleWrappers/BlueText";
@@ -21,7 +20,6 @@ const Login = () => {
   const [emailIsValid, setEmailIsValid] = useState(false);
 
   //UTIL
-  const router = useRouter();
   const toast = useToast();
 
   const validateEmail = (input: string) => {
@@ -79,14 +77,6 @@ const Login = () => {
             type="submit"
           >
             Submit
-          </Button>
-          <Button
-            variant={"primaryInverse"}
-            width={"250px"}
-            margin={"0 auto"}
-            onClick={() => router.push("/")}
-          >
-            Continue As Guest
           </Button>
 
           <Flex flexDir={"column"} rowGap={"16px"}>

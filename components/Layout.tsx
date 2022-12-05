@@ -24,7 +24,13 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
     "get-recovery-link",
   ]);
   const auth = useAuth();
-  const [allowedPaths] = useState(["/", "/login", "/signup"]);
+  const [allowedPaths] = useState([
+    "/",
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/get-recovery-link",
+  ]);
 
   const isStandardLayoutPath = () => {
     const filteredPaths = nonNormalPaths.filter((item) => path.includes(item));
