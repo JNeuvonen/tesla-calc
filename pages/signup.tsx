@@ -142,7 +142,12 @@ const Login = () => {
                 //setRole("driver");
               }}
             >
-              <Flex flexDir={"column"} rowGap={"16px"}>
+              <Flex
+                flexDir={"column"}
+                rowGap={"16px"}
+                opacity={"0.4"}
+                cursor={"not-allowed"}
+              >
                 <Heading fontSize={"26px"} textAlign={"center"}>
                   Tehdä kuljetuksia
                 </Heading>
